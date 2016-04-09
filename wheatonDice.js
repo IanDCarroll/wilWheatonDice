@@ -9,7 +9,10 @@ this is just the engine. Minus the actual engine. Much to be built! -Ian*/
 It will access the device's accelerometer and add physics + chaos to generate the roll.
 it'll be totally sweet!*/
 function roll(diceNumber, diceSides) {
+    //maintained for number crunchy DB usage
     var rolls = []
+    //for the Wheatons.
+    var rollsWil = []
 
     //warning! no edge case protection! You gotta use it just right! Todo: handle edge cases
 
@@ -23,8 +26,20 @@ function roll(diceNumber, diceSides) {
 	return a + b;
     });
 
-    //todo: make it so every "1" that's rolled displays "Wheaton!" instead of "1"	
-
+    //make it so every lowest possible roll that's rolled displays "Wheaton!" 
+	//instead of the number
+    //comment out any portion if you don't want Wil distracting you so much.
+    //uncomment Percy if you're an optimist.
+    if (rollTotal === diceNumber) {
+	rollTotal = "Wheaton!";
+    } else if (rollTotal < (0.33 * (diceSides * diceNumber))){
+	rollTotal += " lesser Wheaton.";
+    } /*else if (rollTotal === (diceSides * diceNumber)) {
+	rollTotal = "Percy!";
+    } else if (rollTotal > (0.66 * (diceSides * diceNumber))) {
+	rollTotal += " lesser Percy.";
+    }*/
+	
     //returns a neat string that shows what you rolled, how each roll went, and the total.
     //This will probably be numberfied and separated out when the actual UI gets built
     return (diceNumber + " d" + diceSides + ": " + rolls.join(", ") + " Total: " + rollTotal);
