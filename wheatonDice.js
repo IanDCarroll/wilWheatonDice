@@ -8,11 +8,11 @@ this is just the engine. Minus the actual engine. Much to be built! -Ian*/
 /*the roller (to be built: a different abstract function than builtin Math.random().
 It will access the device's accelerometer and add physics + chaos to generate the roll.
 it'll be totally sweet!*/
+
+
 function roll(diceNumber, diceSides) {
-    //maintained for number crunchy DB usage
-    var rolls = []
-    //for the Wheatons.
-    var rollsWil = []
+
+    var rolls = [];
 
     //warning! no edge case protection! You gotta use it just right! Todo: handle edge cases
 
@@ -42,10 +42,24 @@ function roll(diceNumber, diceSides) {
 	
     //returns a neat string that shows what you rolled, how each roll went, and the total.
     //This will probably be numberfied and separated out when the actual UI gets built
-    return (diceNumber + " d" + diceSides + ": " + rolls.join(", ") + " Total: " + rollTotal);
+    if (diceNumber === 1 ) {
+	return ("1 d" + diceSides + ": " + rollTotal);
+    } else { 
+	return (diceNumber + " d" + diceSides + ": " + rolls.join(", ") + " Total: " + rollTotal);}
 }
+
+//Special kinds of D&D rolls, Advantage, Disadvantage, Inspiration and mixed rolls
+//!!!still needs work!!!
+function advantage () {
+    var roll1 = roll(1,20),
+	roll2 = roll(1,20);
+
+    return (roll1 + " " + roll2);
+}
+
 
 //manual testing, no edge cases yet.
 console.log(roll(1,20));
 console.log(roll(2,12));
 console.log(roll(10,6));
+console.log(advantage());
