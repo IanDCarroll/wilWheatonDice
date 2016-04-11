@@ -5,14 +5,22 @@ you're eating is influencing your rolls. Also v.1.0 is aiming at 5th edition D&D
 Later versions will be more system agnostic. This is intended for mobile release, but for now, 
 this is just the engine. Minus the actual engine. Much to be built! -Ian*/
 
+displaySides = 0
+displayNumDc = 0
+displayRolls = []
+displayTotal = 0
+displayAdvDs = 0
+
 /*the roller (to be built: a different abstract function than builtin Math.random().
 It will access the device's accelerometer and add physics + chaos to generate the roll.
 it'll be totally sweet!*/
 
-
 function roll(diceNumber, diceSides) {
 
     var rolls = [];
+
+    displaySides = diceSides;
+    displayNumDc = diceNumber;
 
     //warning! no edge case protection! You gotta use it just right! Todo: handle edge cases
 
@@ -21,10 +29,14 @@ function roll(diceNumber, diceSides) {
 	    rolls.push(Math.ceil( Math.random() * diceSides ));     
     }
 
+    displayRolls = rolls;
+
     //folds the array into a neat total
     var rollTotal = rolls.reduce(function(a ,b) {
 	return a + b;
     });
+
+    displayTotal = rollTotal;
 
     //make it so every lowest possible roll that's rolled displays "Wheaton!" 
 	//instead of the number
@@ -50,16 +62,42 @@ function roll(diceNumber, diceSides) {
 
 //Special kinds of D&D rolls, Advantage, Disadvantage, Inspiration and mixed rolls
 //!!!still needs work!!!
-function advantage () {
-    var roll1 = roll(1,20),
-	roll2 = roll(1,20);
+function rollAdvantage () {
+    roll(2, 20);
+    displayAdvDs = Math.max(displayRolls[0], displayRolls[1]);
+    return ("You rolled " + displayRolls.join(" and ") + ". Use the " + Math.max(displayRolls[0], displayRolls[1]) + "!");
+}
 
-    return (roll1 + " " + roll2);
+function rollDisadvantage () {
+    roll(2, 20);
+    displayAdvDs = Math.min(displayRolls[0], displayRolls[1]);
+    return ("You rolled " + displayRolls.join(" and ") + ". Use the " + Math.min(displayRolls[0], displayRolls[1]) + ". :(");
 }
 
 
+
 //manual testing, no edge cases yet.
+console.log(displayNumDc);
+console.log(displaySides);
+console.log(displayRolls);
+console.log(displayTotal);
 console.log(roll(1,20));
+console.log(displayNumDc);
+console.log(displaySides);
+console.log(displayRolls);
+console.log(displayTotal);
 console.log(roll(2,12));
+console.log(displayNumDc);
+console.log(displaySides);
+console.log(displayRolls);
+console.log(displayTotal);
 console.log(roll(10,6));
-console.log(advantage());
+console.log(displayNumDc);
+console.log(displaySides);
+console.log(displayRolls);
+console.log(displayTotal);
+console.log(displayAdvDs);
+console.log(rollAdvantage());
+console.log(displayAdvDs);
+console.log(rollDisadvantage());
+console.log(displayAdvDs);
