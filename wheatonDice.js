@@ -1,21 +1,22 @@
 /* wheatonDice is an opensource project to study the legendary dice curse of Wil Wheaton
-and get to the bottom of bad juju. At the moment, it's just a dice roller, but later functions 
-will include a rolls database that can track any sinking feeling that the kind of cheetos 
-you're eating is influencing your rolls. Also v.1.0 is aiming at 5th edition D&D rules usage. 
-Later versions will be more system agnostic. This is intended for mobile release, but for now, 
-this is just the engine. Minus the actual engine. Much to be built! -Ian*/
+ * and get to the bottom of bad juju. At the moment, it's just a dice roller, but later 
+ * functions will include a rolls database that can track any sinking feeling that the kind of 
+ * cheetos you're eating is influencing your rolls. Also v.1.0 is aiming at 5th edition D&D rules
+ * usage. Later versions will be more system agnostic. This is intended for mobile release, but 
+ * for now, this is just the engine. Minus the actual engine. Broad strokes to get the system 
+ * working. Much to be built! -Ian
+ */
 
-displaySides = 0
-displayNumDc = 0
-displayRolls = []
-displayTotal = 0
-displayAdvDs = 0
+//public variables
+var displaySides = 0,
+    displayNumDc = 0,
+    displayRolls = [],
+    displayTotal = 0;
 
-/*the roller (to be built: a different abstract function than builtin Math.random().
+/*the physics engine (to be built: a different abstract function than builtin Math.random().
 It will access the device's accelerometer and add physics + chaos to generate the roll.
 it'll be totally sweet!*/
-
-function roll(diceNumber, diceSides) {
+function physics(diceNumber, diceSides) {
 
     var rolls = [];
 
@@ -37,11 +38,15 @@ function roll(diceNumber, diceSides) {
     });
 
     displayTotal = rollTotal;
+    return rollOut(displayNumDc, displaySides, displayRolls, displayTotal);
+}
 
-    //make it so every lowest possible roll that's rolled displays "Wheaton!" 
-	//instead of the number
-    //comment out any portion if you don't want Wil distracting you so much.
-    //uncomment Percy if you're an optimist.
+//Separate output function, so that code is easy to delete.
+//make it so every lowest possible roll that's rolled displays "Wheaton!" 
+    //instead of the number
+//comment out any portion if you don't want Wil distracting you so much.
+//uncomment Percy if you're an optimist.
+function rollOut(diceNumber, diceSides, rolls, rollTotal) {
     if (rollTotal === diceNumber) {
 	rollTotal = "Wheaton!";
     } else if (rollTotal < (0.33 * (diceSides * diceNumber))){
@@ -54,50 +59,71 @@ function roll(diceNumber, diceSides) {
 	
     //returns a neat string that shows what you rolled, how each roll went, and the total.
     //This will probably be numberfied and separated out when the actual UI gets built
-    if (diceNumber === 1 ) {
+    if (diceNumber === 1) {
 	return ("1 d" + diceSides + ": " + rollTotal);
     } else { 
 	return (diceNumber + " d" + diceSides + ": " + rolls.join(", ") + " Total: " + rollTotal);}
 }
 
+//input functions.
+//uses public variables to access physics() function.
+function roll(diceNumber, diceSides) {
+    return physics(diceNumber, diceSides);
+}
+
 //Special kinds of D&D rolls, Advantage, Disadvantage, Inspiration and mixed rolls
-//!!!still needs work!!!
 function rollAdvantage () {
     roll(2, 20);
-    displayAdvDs = Math.max(displayRolls[0], displayRolls[1]);
-    return ("You rolled " + displayRolls.join(" and ") + ". Use the " + Math.max(displayRolls[0], displayRolls[1]) + "!");
+    displayTotal = Math.max(displayRolls[0], displayRolls[1]);
+    return (displayRolls.join(" and ") + ". Result: " + displayTotal);
 }
 
 function rollDisadvantage () {
     roll(2, 20);
-    displayAdvDs = Math.min(displayRolls[0], displayRolls[1]);
-    return ("You rolled " + displayRolls.join(" and ") + ". Use the " + Math.min(displayRolls[0], displayRolls[1]) + ". :(");
+    displayTotal = Math.min(displayRolls[0], displayRolls[1]);
+    return (displayRolls.join(" and ") + ". Result: " + displayTotal);
 }
 
+//Accesses the last most recent roll, check if it is a d20 roll, then add itself to that roll. 
+//Handles Advantage, & Disadvantage rolls as well.
+function rollInspiration () {
+    var lastRoll = 0;
 
+    if (displaySides === 20) {
+	lastRoll = displayTotal;
+	roll(1, 10);
+	return ("+" + displayTotal + " to " + lastRoll + ": " + (lastRoll + displayTotal));
+    } else {
+	return ("You can only add an inspiration die to a d20 roll.");
+    }
+}
+
+//input for manual rolls (like if you're using real dice). changes public variables directly.
+function rollManual(diceNumber, diceSides, rolls) {
+    displayNumDc = diceNumber;
+    displaySides = diceSides;
+    //todo: create an if statement that checks that rolls is an Array.
+    displayRolls = rolls;
+
+    displayTotal = rolls.reduce(function(a ,b) {
+	return a + b;
+    });
+
+    return rollOut(displayNumDc, displaySides, displayRolls, displayTotal);
+}
 
 //manual testing, no edge cases yet.
-console.log(displayNumDc);
-console.log(displaySides);
-console.log(displayRolls);
-console.log(displayTotal);
 console.log(roll(1,20));
-console.log(displayNumDc);
-console.log(displaySides);
-console.log(displayRolls);
-console.log(displayTotal);
+console.log(rollInspiration());
 console.log(roll(2,12));
-console.log(displayNumDc);
-console.log(displaySides);
-console.log(displayRolls);
-console.log(displayTotal);
+console.log(rollInspiration());
 console.log(roll(10,6));
-console.log(displayNumDc);
-console.log(displaySides);
-console.log(displayRolls);
-console.log(displayTotal);
-console.log(displayAdvDs);
 console.log(rollAdvantage());
-console.log(displayAdvDs);
+console.log(rollInspiration());
 console.log(rollDisadvantage());
-console.log(displayAdvDs);
+console.log(rollInspiration());
+console.log(rollManual(10, 6, [4, 4, 4, 2, 5, 2, 3, 2, 1, 6]));
+console.log(rollManual(2, 12, [5, 2]));
+console.log(rollInspiration());
+console.log(rollManual(1, 20, [20]));
+console.log(rollInspiration());
