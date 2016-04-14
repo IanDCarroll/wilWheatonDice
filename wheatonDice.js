@@ -67,7 +67,6 @@ function rollOut(diceNumber, diceSides, rolls, rollTotal) {
 
 //input functions.
 //uses public variables to access physics() function.
-//ATM roll is a dependency for special roll functions, may need to correct.
 function roll(diceNumber, diceSides) {
     return physics(diceNumber, diceSides);
 }
@@ -82,42 +81,42 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	mixTotal = 0;
 	diceRold = [];
 
-    roll(dNum1, dSid1);
+    physics(dNum1, dSid1);
     diceRold.push(dNum1 + " d" + dSid1);
     for (var i = 0; i < displayRolls.length; i++) {
 	diceMix.push(displayRolls[i]);
     }
 
     if (dNum2 > 0) {
-	roll(dNum2, dSid2);
+	physics(dNum2, dSid2);
 	diceRold.push(dNum2 + " d" + dSid2);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
 	}
     }
     if (dNum3 > 0) {
-	roll(dNum3, dSid3);
+	physics(dNum3, dSid3);
 	diceRold.push(dNum3 + " d" + dSid3);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
 	}
     }
     if (dNum4 > 0) {
-	roll(dNum4, dSid4);
+	physics(dNum4, dSid4);
 	diceRold.push(dNum4 + " d" + dSid4);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
 	}
     }
     if (dNum5 > 0) {
-	roll(dNum5, dSid5);
+	physics(dNum5, dSid5);
 	diceRold.push(dNum5 + " d" + dSid5);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
 	}
     }
     if (dNum6 > 0) {
-	roll(dNum6, dSid6);
+	physics(dNum6, dSid6);
 	diceRold.push(dNum6 + " d" + dSid6);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
@@ -148,7 +147,7 @@ function rollDisadvantage() {
 }
 
 function rollPercent() {
-    roll(2, 10);
+    physics(2, 10);
 
     dicePercent = 0;
 
@@ -171,7 +170,7 @@ function rollInspiration() {
 
     if (displaySides === 20) {
 	lastRoll = displayTotal;
-	roll(1, 10);
+	physics(1, 10);
 	return ("+" + displayTotal + " to " + lastRoll + ": " 
 		+ (lastRoll + displayTotal));
     } else {
