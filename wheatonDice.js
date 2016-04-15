@@ -13,6 +13,11 @@ var displaySides = 0,
     displayRolls = [],
     displayTotal = 0;
 
+//saved rolls go here so they can be accessed and analyzed (unitl a proper DB is made)
+//currnet version forgets after the battery of console.log()s are made. Need a proper DB, 
+//but this is proof of concept. todo: db that can store previous rolls.
+var rollDB = [];
+
 /*the physics engine (to be built: a different abstract function than builtin Math.random().
 It will access the device's accelerometer and add physics + chaos to generate the roll.
 it'll be totally sweet!*/
@@ -38,6 +43,21 @@ function physics(diceNumber, diceSides) {
     });
 
     displayTotal = rollTotal;
+    return rollDBizer();
+}
+
+//function between physics and rollOut that passes roll results to rollDB.
+function rollDBizer() {
+    var rollTime = new Date(),
+	rollEntry = [],
+
+    //rollTime set to Now in ms. Date function, roll stats organized to rollEntry
+    rollEntry = [rollTime.getTime(), displayNumDc, displaySides, displayRolls, displayTotal];
+
+    rollDB.push(rollEntry);
+    //rollDB += rollEntry???
+    
+
     return rollOut(displayNumDc, displaySides, displayRolls, displayTotal);
 }
 
@@ -134,18 +154,21 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 }
 
 //Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls
+//todo: make sure rollDB gets the proper displayTotal
 function rollAdvantage() {
     roll(2, 20);
     displayTotal = Math.max(displayRolls[0], displayRolls[1]);
     return (displayRolls.join(" & ") + ". Result: " + displayTotal);
 }
 
+//todo: make sure rollDB gets the proper displayTotal
 function rollDisadvantage() {
     roll(2, 20);
     displayTotal = Math.min(displayRolls[0], displayRolls[1]);
     return (displayRolls.join(" & ") + ". Result: " + displayTotal);
 }
 
+//todo : make sure rollDB gets the proper displayTotal
 function rollPercent() {
     physics(2, 10);
 
@@ -179,6 +202,7 @@ function rollInspiration() {
 }
 
 //input for manual rolls (like if you're using real dice). changes public variables directly.
+//todo: make sure manual rolls get pushed to rollDB - currently no entry.
 function rollManual(diceNumber, diceSides, rolls) {
     displayNumDc = diceNumber;
     displaySides = diceSides;
@@ -214,4 +238,4 @@ console.log(rollPercent());
 console.log(rollPercent());
 console.log(rollPercent());
 console.log(rollPercent());
-
+console.log(rollDB);
