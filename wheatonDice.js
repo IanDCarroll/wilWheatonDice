@@ -155,6 +155,8 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 
 //Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls
 //todo: make sure rollDB gets the proper displayTotal
+//possible solution: separate the rolls so they DBize individually.
+//possible solution: alter the record after the fact.
 function rollAdvantage() {
     roll(2, 20);
     displayTotal = Math.max(displayRolls[0], displayRolls[1]);
@@ -202,7 +204,6 @@ function rollInspiration() {
 }
 
 //input for manual rolls (like if you're using real dice). changes public variables directly.
-//todo: make sure manual rolls get pushed to rollDB - currently no entry.
 function rollManual(diceNumber, diceSides, rolls) {
     displayNumDc = diceNumber;
     displaySides = diceSides;
@@ -213,7 +214,7 @@ function rollManual(diceNumber, diceSides, rolls) {
 	return a + b;
     });
 
-    return rollOut(displayNumDc, displaySides, displayRolls, displayTotal);
+    return rollDBizer();
 }
 
 //manual testing, no edge cases yet.
