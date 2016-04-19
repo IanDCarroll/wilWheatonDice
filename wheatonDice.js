@@ -155,8 +155,9 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 
 //Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls
 //todo: make sure rollDB gets the proper displayTotal
-//possible solution: separate the rolls so they DBize individually.
-//possible solution: alter the record after the fact.
+//possible solution: alter the record after the fact. 
+//2 dice are rolled but it counts as one roll. 
+//entry[1] needs to change to "A". entry[4] needs to alter to the true in-game result.
 function rollAdvantage() {
     roll(2, 20);
     displayTotal = Math.max(displayRolls[0], displayRolls[1]);
@@ -164,6 +165,7 @@ function rollAdvantage() {
 }
 
 //todo: make sure rollDB gets the proper displayTotal
+//entry[1] needs to change to "D". entry[4] needs to change to the true in-game result.
 function rollDisadvantage() {
     roll(2, 20);
     displayTotal = Math.min(displayRolls[0], displayRolls[1]);
@@ -171,6 +173,7 @@ function rollDisadvantage() {
 }
 
 //todo : make sure rollDB gets the proper displayTotal
+//entry[1] needs to change to "P". entry[4] needs to change to the true in-game result.
 function rollPercent() {
     physics(2, 10);
 
