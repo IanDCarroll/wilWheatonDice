@@ -8,8 +8,8 @@
  */
 
 //public variables
-var displaySides = 0,
-    displayNumDc = 0,
+var displayNumDc = 0,
+    displaySides = 0,
     displayRolls = [],
     displayTotal = 0;
 
@@ -107,35 +107,35 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	diceMix.push(displayRolls[i]);
     }
 
-    if (dNum2 > 0) {
+    if (dNum2) {
 	physics(dNum2, dSid2);
 	diceRold.push(dNum2 + " d" + dSid2);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
 	}
     }
-    if (dNum3 > 0) {
+    if (dNum3) {
 	physics(dNum3, dSid3);
 	diceRold.push(dNum3 + " d" + dSid3);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
 	}
     }
-    if (dNum4 > 0) {
+    if (dNum4) {
 	physics(dNum4, dSid4);
 	diceRold.push(dNum4 + " d" + dSid4);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
 	}
     }
-    if (dNum5 > 0) {
+    if (dNum5) {
 	physics(dNum5, dSid5);
 	diceRold.push(dNum5 + " d" + dSid5);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
 	}
     }
-    if (dNum6 > 0) {
+    if (dNum6) {
 	physics(dNum6, dSid6);
 	diceRold.push(dNum6 + " d" + dSid6);
 	for (var i = 0; i < displayRolls.length; i++) {
@@ -154,21 +154,24 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 }
 
 //Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls
-//todo: make sure rollDB gets the proper displayTotal
-//possible solution: alter the record after the fact. 
-//2 dice are rolled but it counts as one roll. 
-//entry[1] needs to change to "A". entry[4] needs to alter to the true in-game result.
+//to make sure rollDB gets the proper push, this inefficiently reworks and rewrites rollDBizer().
 function rollAdvantage() {
+    var rollTime = new Date();
     roll(2, 20);
+    displayNumDc = "A";
     displayTotal = Math.max(displayRolls[0], displayRolls[1]);
+    rollDB[rollDB.length -1] = [rollTime.getTime(), displayNumDc, displaySides, 
+				displayRolls, displayTotal];
     return (displayRolls.join(" & ") + ". Result: " + displayTotal);
 }
 
-//todo: make sure rollDB gets the proper displayTotal
-//entry[1] needs to change to "D". entry[4] needs to change to the true in-game result.
 function rollDisadvantage() {
+    var rollTime = new Date();
     roll(2, 20);
+    displayNumDc = "D";
     displayTotal = Math.min(displayRolls[0], displayRolls[1]);
+    rollDB[rollDB.length -1] = [rollTime.getTime(), displayNumDc, displaySides, 
+				displayRolls, displayTotal];
     return (displayRolls.join(" & ") + ". Result: " + displayTotal);
 }
 
