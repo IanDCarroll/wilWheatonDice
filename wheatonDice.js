@@ -7,6 +7,22 @@
  * working. Much to be built! -Ian
  */
 
+//todo: un-daisychain physics()=>rollDBizer()=>rollOut(). 
+//Allow the calling function to call each separately.
+//remove rework in rollDB.
+//make rollTime a public variable, or handle it in a better way.
+//actually have a saved rollDB.
+//allow the user to opt out of DBizing for test rolls.
+//add 1-10 importance DB element.
+//add standard juju options.
+//add home-spun juju options.
+//port to Java, Python, Ruby.
+//somehow access accelorometer.
+//build propper physics engine.
+//have something that mines data for analysis.
+//somehow build GUI for rolls and DB analysis.
+//when all that's done, start building integrated RPG framework for more tools.
+
 //public variables
 var displayNumDc = 0,
     displaySides = 0,
@@ -55,9 +71,7 @@ function rollDBizer() {
     rollEntry = [rollTime.getTime(), displayNumDc, displaySides, displayRolls, displayTotal];
 
     rollDB.push(rollEntry);
-    //rollDB += rollEntry???
     
-
     return rollOut(displayNumDc, displaySides, displayRolls, displayTotal);
 }
 
@@ -147,17 +161,17 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	return a + b;
     });
 
-    var dispString = (diceRold.join(", ") + ": " 
+    var displayString = (diceRold.join(", ") + ": " 
 	+ diceMix.join(", ") + " Total: " + mixTotal);
 
-    return dispString;
+    return displayString;
 }
 
 //Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls
 //to make sure rollDB gets the proper push, this inefficiently reworks and rewrites rollDBizer().
 function rollAdvantage() {
     var rollTime = new Date();
-    roll(2, 20);
+    physics(2, 20);
     displayNumDc = "A";
     displayTotal = Math.max(displayRolls[0], displayRolls[1]);
     rollDB[rollDB.length -1] = [rollTime.getTime(), displayNumDc, displaySides, 
@@ -167,7 +181,7 @@ function rollAdvantage() {
 
 function rollDisadvantage() {
     var rollTime = new Date();
-    roll(2, 20);
+    physics(2, 20);
     displayNumDc = "D";
     displayTotal = Math.min(displayRolls[0], displayRolls[1]);
     rollDB[rollDB.length -1] = [rollTime.getTime(), displayNumDc, displaySides, 
@@ -176,20 +190,15 @@ function rollDisadvantage() {
 }
 
 //todo : make sure rollDB gets the proper displayTotal
-//entry[1] needs to change to "P". entry[4] needs to change to the true in-game result.
+//entry[1] needs to change to "%". entry[4] needs to change to the true in-game result.
 function rollPercent() {
+    var rollTime = new Date();
     physics(2, 10);
-
-    dicePercent = 0;
-
-    dicePercent = ((displayRolls[0] % 10) * 10) + (displayRolls[1] % 10);
-
-    if (dicePercent < 1) {
-	dicePercent = 100;
-    }
-
-    displayTotal = dicePercent;
-
+    displayNumDc = "%";
+    displayTotal = ((displayRolls[0] % 10) * 10) + (displayRolls[1] % 10);
+    if (displayTotal === 0) displayTotal = 100;
+    rollDB[rollDB.length -1] = [rollTime.getTime(), displayNumDc, displaySides, 
+				displayRolls, displayTotal];
     return (displayRolls.join(" & ") + " %Score: " + displayTotal); 
 }
 
@@ -198,7 +207,6 @@ function rollPercent() {
 //Handles Advantage, & Disadvantage rolls as well.
 function rollInspiration() {
     var lastRoll = 0;
-
     if (displaySides === 20) {
 	lastRoll = displayTotal;
 	physics(1, 10);
@@ -215,11 +223,9 @@ function rollManual(diceNumber, diceSides, rolls) {
     displaySides = diceSides;
     //todo: create an if statement that checks that rolls is an Array.
     displayRolls = rolls;
-
     displayTotal = rolls.reduce(function(a ,b) {
 	return a + b;
     });
-
     return rollDBizer();
 }
 
