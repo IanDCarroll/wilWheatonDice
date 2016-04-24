@@ -8,6 +8,7 @@
  */
 
 //todo: un-daisychain physics()=>rollDBizer()=>rollOut(). 
+	//===> !!! *** fix rollDBizer *** !!! <===
 //Allow the calling function to call each separately.
 //remove rework in rollDB.
 //make rollTime a public variable, or handle it in a better way.
@@ -59,7 +60,6 @@ function physics(diceNumber, diceSides) {
     });
 
     displayTotal = rollTotal;
-    return rollDBizer();
 }
 
 //function between physics and rollOut that passes roll results to rollDB.
@@ -71,8 +71,6 @@ function rollDBizer() {
     rollEntry = [rollTime.getTime(), displayNumDc, displaySides, displayRolls, displayTotal];
 
     rollDB.push(rollEntry);
-    
-    return rollOut(displayNumDc, displaySides, displayRolls, displayTotal);
 }
 
 //Separate output function, so that code is easy to delete.
@@ -80,29 +78,31 @@ function rollDBizer() {
     //instead of the number
 //comment out any portion if you don't want Wil distracting you so much.
 //uncomment Percy if you're an optimist.
-function rollOut(diceNumber, diceSides, rolls, rollTotal) {
-    if (rollTotal === diceNumber) {
-	rollTotal = "Wheaton!";
-    } else if (rollTotal < (0.33 * (diceSides * diceNumber))){
-	rollTotal += " lesser Wheaton.";
-    } /*else if (rollTotal === (diceSides * diceNumber)) {
-	rollTotal = "Percy!";
-    } else if (rollTotal > (0.66 * (diceSides * diceNumber))) {
-	rollTotal += " lesser Percy.";
+function rollOut() {
+    if (displayTotal === displayNumDc) {
+	displayTotal = "Wheaton!";
+    } else if (displayTotal < (0.33 * (displaySides * displayNumDc))){
+	displayTotal += " lesser Wheaton.";
+    } /*else if (displayTotal === (displaySides * displayNumDc)) {
+	displayTotal = "Percy!";
+    } else if (displayTotal > (0.66 * (displaySides * displayNumDc))) {
+	displayTotal += " lesser Percy.";
     }*/
 	
     //returns a neat string that shows what you rolled, how each roll went, and the total.
     //This will probably be numberfied and separated out when the actual UI gets built
-    if (diceNumber === 1) {
-	return ("1 d" + diceSides + ": " + rollTotal);
+    if (displayNumDc === 1) {
+	return ("1 d" + displaySides + ": " + displayTotal);
     } else { 
-	return (diceNumber + " d" + diceSides + ": " + rolls.join(", ") + " Total: " + rollTotal);}
+	return (displayNumDc + " d" + displaySides + ": " + displayRolls.join(", ") + " Total: " + displayTotal);}
 }
 
 //input functions.
 //uses public variables to access physics() function.
 function roll(diceNumber, diceSides) {
-    return physics(diceNumber, diceSides);
+    physics(diceNumber, diceSides);
+    rollDBizer();
+    return rollOut();
 }
 
 /*Mixed dice rolls. There are 6 Standard dice in D&D.
@@ -226,7 +226,8 @@ function rollManual(diceNumber, diceSides, rolls) {
     displayTotal = rolls.reduce(function(a ,b) {
 	return a + b;
     });
-    return rollDBizer();
+    rollDBizer();
+    return rollOut();
 }
 
 //manual testing, no edge cases yet.
