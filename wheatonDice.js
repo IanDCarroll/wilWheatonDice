@@ -7,10 +7,8 @@
  * working. Much to be built! -Ian
  */
 
-//todo: un-daisychain physics()=>rollDBizer()=>rollOut(). 
-	//===> !!! *** fix rollDBizer *** !!! <===
-//Allow the calling function to call each separately.
-//remove rework in rollDB.
+//todo: fix "Wheaton!" so that they all do it. 
+//(and so inspiratin doesn't concat wheaton to total)
 //make rollTime a public variable, or handle it in a better way.
 //actually have a saved rollDB.
 //allow the user to opt out of DBizing for test rolls.
@@ -62,7 +60,7 @@ function physics(diceNumber, diceSides) {
     displayTotal = rollTotal;
 }
 
-//function between physics and rollOut that passes roll results to rollDB.
+//passes roll results to rollDB.
 function rollDBizer() {
     var rollTime = new Date(),
 	rollEntry = [],
@@ -116,6 +114,7 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	diceRold = [];
 
     physics(dNum1, dSid1);
+    rollDBizer();
     diceRold.push(dNum1 + " d" + dSid1);
     for (var i = 0; i < displayRolls.length; i++) {
 	diceMix.push(displayRolls[i]);
@@ -123,6 +122,7 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 
     if (dNum2) {
 	physics(dNum2, dSid2);
+	rollDBizer();
 	diceRold.push(dNum2 + " d" + dSid2);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
@@ -130,6 +130,7 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
     }
     if (dNum3) {
 	physics(dNum3, dSid3);
+	rollDBizer();
 	diceRold.push(dNum3 + " d" + dSid3);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
@@ -137,6 +138,7 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
     }
     if (dNum4) {
 	physics(dNum4, dSid4);
+	rollDBizer();
 	diceRold.push(dNum4 + " d" + dSid4);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
@@ -144,6 +146,7 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
     }
     if (dNum5) {
 	physics(dNum5, dSid5);
+	rollDBizer();
 	diceRold.push(dNum5 + " d" + dSid5);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
@@ -151,6 +154,7 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
     }
     if (dNum6) {
 	physics(dNum6, dSid6);
+	rollDBizer();
 	diceRold.push(dNum6 + " d" + dSid6);
 	for (var i = 0; i < displayRolls.length; i++) {
 		diceMix.push(displayRolls[i]);
@@ -167,15 +171,12 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
     return displayString;
 }
 
-//Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls
-//to make sure rollDB gets the proper push, this inefficiently reworks and rewrites rollDBizer().
+//Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls.
 function rollAdvantage() {
-    var rollTime = new Date();
     physics(2, 20);
     displayNumDc = "A";
     displayTotal = Math.max(displayRolls[0], displayRolls[1]);
-    rollDB[rollDB.length -1] = [rollTime.getTime(), displayNumDc, displaySides, 
-				displayRolls, displayTotal];
+    rollDBizer();
     return (displayRolls.join(" & ") + ". Result: " + displayTotal);
 }
 
@@ -184,8 +185,7 @@ function rollDisadvantage() {
     physics(2, 20);
     displayNumDc = "D";
     displayTotal = Math.min(displayRolls[0], displayRolls[1]);
-    rollDB[rollDB.length -1] = [rollTime.getTime(), displayNumDc, displaySides, 
-				displayRolls, displayTotal];
+    rollDBizer();
     return (displayRolls.join(" & ") + ". Result: " + displayTotal);
 }
 
@@ -197,8 +197,7 @@ function rollPercent() {
     displayNumDc = "%";
     displayTotal = ((displayRolls[0] % 10) * 10) + (displayRolls[1] % 10);
     if (displayTotal === 0) displayTotal = 100;
-    rollDB[rollDB.length -1] = [rollTime.getTime(), displayNumDc, displaySides, 
-				displayRolls, displayTotal];
+    rollDBizer();
     return (displayRolls.join(" & ") + " %Score: " + displayTotal); 
 }
 
@@ -210,6 +209,7 @@ function rollInspiration() {
     if (displaySides === 20) {
 	lastRoll = displayTotal;
 	physics(1, 10);
+	rollDBizer();
 	return ("+" + displayTotal + " to " + lastRoll + ": " 
 		+ (lastRoll + displayTotal));
     } else {
@@ -221,7 +221,7 @@ function rollInspiration() {
 function rollManual(diceNumber, diceSides, rolls) {
     displayNumDc = diceNumber;
     displaySides = diceSides;
-    //todo: create an if statement that checks that rolls is an Array.
+    //rolls needs to be an array.
     displayRolls = rolls;
     displayTotal = rolls.reduce(function(a ,b) {
 	return a + b;
