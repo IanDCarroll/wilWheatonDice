@@ -7,11 +7,10 @@
  * working. Much to be built! -Ian
  */
 
-//todo: fix "Wheaton!" so that they all do it. 
-//(and so inspiratin doesn't concat wheaton to total)
+//todo: fix "Wheaton!" so that they all do it.
 //make rollTime a public variable, or handle it in a better way.
 //actually have a saved rollDB.
-//allow the user to opt out of DBizing for test rolls.
+//allow the user to opt out of DBizing or wheatonizing.
 //add 1-10 importance DB element.
 //add standard juju options.
 //add home-spun juju options.
@@ -23,11 +22,11 @@
 //when all that's done, start building integrated RPG framework for more tools.
 
 //public variables
-var displayNumDc = 0,
-    displaySides = 0,
-    displayRolls = [],
-    displayTotal = 0,
-    displayWhton = "";
+var diNumbr = 0,
+    diSides = 0,
+    diRolls = [],
+    diTotal = 0,
+    wheaton = "";
 
 //saved rolls go here so they can be accessed and analyzed (unitl a proper DB is made)
 //currnet version forgets after the battery of console.log()s are made. Need a proper DB, 
@@ -37,28 +36,28 @@ var rollDB = [];
 /*the physics engine (to be built: a different abstract function than builtin Math.random().
 It will access the device's accelerometer and add physics + chaos to generate the roll.
 it'll be totally sweet!*/
-function physics(diceNumber, diceSides) {
+function physics(dNum, dSid) {
 
     var rolls = [];
 
-    displaySides = diceSides;
-    displayNumDc = diceNumber;
+    diSides = dSid;
+    diNumbr = dNum;
 
     //warning! no edge case protection! You gotta use it just right! Todo: handle edge cases
 
     //rolls each die separately then pushes to "rolls" array.
-    for (var i = 0; i < diceNumber; i++) {	
-	    rolls.push(Math.ceil( Math.random() * diceSides ));     
+    for (var i = 0; i < dNum; i++) {	
+	    rolls.push(Math.ceil( Math.random() * dSid ));     
     }
 
-    displayRolls = rolls;
+    diRolls = rolls;
 
     //folds the array into a neat total
-    var rollTotal = rolls.reduce(function(a ,b) {
+    var totally = rolls.reduce(function(a ,b) {
 	return a + b;
     });
 
-    displayTotal = rollTotal;
+    diTotal = totally;
 }
 
 //passes roll results to rollDB.
@@ -67,7 +66,7 @@ function rollDBizer() {
 	rollEntry = [],
 
     //rollTime set to Now in ms. Date function, roll stats organized to rollEntry
-    rollEntry = [rollTime.getTime(), displayNumDc, displaySides, displayRolls, displayTotal];
+    rollEntry = [rollTime.getTime(), diNumbr, diSides, diRolls, diTotal];
 
     rollDB.push(rollEntry);
 }
@@ -75,35 +74,36 @@ function rollDBizer() {
 //Separate wheatonizer, so that code is easy to delete.
 //make it so every lowest possible roll that's rolled displays "Wheaton!" 
     //instead of the number
-function wheaton() {
-    if (displayTotal === displayNumDc) {
-	displayWhton = "Wheaton!";
-    } else if (displayTotal < (0.33 * (displaySides * displayNumDc))){
-	displayWhton = "lesser Wheaton.";
-    } else if (displayTotal === (displaySides * displayNumDc)) {
-	displayWhton = "Percy!";
-    } else if (displayTotal > (0.66 * (displaySides * displayNumDc))) {
-	displayWhton = "lesser Percy.";
+function wheatonize() {
+    if (diTotal === diNumbr) {
+	wheaton = "Wheaton!";
+    } else if (diTotal < (0.33 * (diNumbr * diSides))){
+	wheaton = "lesser Wheaton.";
+    } else if (diTotal === (diNumbr * diSides)) {
+	wheaton = "Percy!";
+    } else if (diTotal > (0.66 * (diNumbr * diSides))) {
+	wheaton = "lesser Percy.";
     } else {
-	displayWhton = "";
+	wheaton = "";
     }
 }
 	
 //returns a neat string that shows what you rolled, how each roll went, and the total.
 //This will probably be numberfied and separated out when the actual UI gets built
 function rollOut() {
-    if (displayNumDc === 1) {
-	return ("1 d" + displaySides + ": " + displayTotal);
+    if (diNumbr === 1) {
+	return ("1 d" + diSides + ": " + diTotal + " " + wheaton);
     } else { 
-	return (displayNumDc + " d" + displaySides + ": " + displayRolls.join(", ") + " Total: " + displayTotal + " " + displayWhton);}
+	return (diNumbr + " d" + diSides + ": " + diRolls.join(", ") + 
+		" Total: " + diTotal + " " + wheaton);}
 }
 
 //input functions.
 //uses public variables to access physics() function.
-function roll(diceNumber, diceSides) {
-    physics(diceNumber, diceSides);
+function roll(dNum, dSid) {
+    physics(dNum, dSid);
     rollDBizer();
-    wheaton();
+    wheatonize();
     return rollOut();
 }
 
@@ -114,54 +114,55 @@ rollMix will be able to handle up to 6 different kinds of dice rolls. */
 function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3, 
 		 dNum4, dSid4, dNum5, dSid5, dNum6, dSid6) {
     var diceMix = [],
-	mixTotal = 0;
-	diceRold = [];
+	mixTotal = 0,
+	diceRold = [],
+	displayString;
 
     physics(dNum1, dSid1);
     rollDBizer();
     diceRold.push(dNum1 + " d" + dSid1);
-    for (var i = 0; i < displayRolls.length; i++) {
-	diceMix.push(displayRolls[i]);
+    for (var i = 0; i < diRolls.length; i++) {
+	diceMix.push(diRolls[i]);
     }
 
     if (dNum2) {
 	physics(dNum2, dSid2);
 	rollDBizer();
 	diceRold.push(dNum2 + " d" + dSid2);
-	for (var i = 0; i < displayRolls.length; i++) {
-		diceMix.push(displayRolls[i]);
+	for (var i = 0; i < diRolls.length; i++) {
+		diceMix.push(diRolls[i]);
 	}
     }
     if (dNum3) {
 	physics(dNum3, dSid3);
 	rollDBizer();
 	diceRold.push(dNum3 + " d" + dSid3);
-	for (var i = 0; i < displayRolls.length; i++) {
-		diceMix.push(displayRolls[i]);
+	for (var i = 0; i < diRolls.length; i++) {
+		diceMix.push(diRolls[i]);
 	}
     }
     if (dNum4) {
 	physics(dNum4, dSid4);
 	rollDBizer();
 	diceRold.push(dNum4 + " d" + dSid4);
-	for (var i = 0; i < displayRolls.length; i++) {
-		diceMix.push(displayRolls[i]);
+	for (var i = 0; i < diRolls.length; i++) {
+		diceMix.push(diRolls[i]);
 	}
     }
     if (dNum5) {
 	physics(dNum5, dSid5);
 	rollDBizer();
 	diceRold.push(dNum5 + " d" + dSid5);
-	for (var i = 0; i < displayRolls.length; i++) {
-		diceMix.push(displayRolls[i]);
+	for (var i = 0; i < diRolls.length; i++) {
+		diceMix.push(diRolls[i]);
 	}
     }
     if (dNum6) {
 	physics(dNum6, dSid6);
 	rollDBizer();
 	diceRold.push(dNum6 + " d" + dSid6);
-	for (var i = 0; i < displayRolls.length; i++) {
-		diceMix.push(displayRolls[i]);
+	for (var i = 0; i < diRolls.length; i++) {
+		diceMix.push(diRolls[i]);
 	}
     }
 
@@ -169,8 +170,8 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	return a + b;
     });
 
-    var displayString = (diceRold.join(", ") + ": " 
-	+ diceMix.join(", ") + " Total: " + mixTotal);
+    displayString = (diceRold.join(", ") + ": " + diceMix.join(", ") + " Total: " + mixTotal);
+
 
     return displayString;
 }
@@ -178,59 +179,58 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 //Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls.
 function rollAdvantage() {
     physics(2, 20);
-    displayNumDc = "A";
-    displayTotal = Math.max(displayRolls[0], displayRolls[1]);
+    diNumbr = "A";
+    diTotal = Math.max(diRolls[0], diRolls[1]);
     rollDBizer();
-    return (displayRolls.join(" & ") + ". Result: " + displayTotal);
+    return (diRolls.join(" & ") + ". Result: " + diTotal);
 }
 
 function rollDisadvantage() {
     var rollTime = new Date();
     physics(2, 20);
-    displayNumDc = "D";
-    displayTotal = Math.min(displayRolls[0], displayRolls[1]);
+    diNumbr = "D";
+    diTotal = Math.min(diRolls[0], diRolls[1]);
     rollDBizer();
-    return (displayRolls.join(" & ") + ". Result: " + displayTotal);
+    return (diRolls.join(" & ") + ". Result: " + diTotal);
 }
 
-//todo : make sure rollDB gets the proper displayTotal
-//entry[1] needs to change to "%". entry[4] needs to change to the true in-game result.
 function rollPercent() {
     var rollTime = new Date();
     physics(2, 10);
-    displayNumDc = "%";
-    displayTotal = ((displayRolls[0] % 10) * 10) + (displayRolls[1] % 10);
-    if (displayTotal === 0) displayTotal = 100;
+    diNumbr = "%";
+    diTotal = ((diRolls[0] % 10) * 10) + (diRolls[1] % 10);
+    if (diTotal === 0) diTotal = 100;
     rollDBizer();
-    return (displayRolls.join(" & ") + " %Score: " + displayTotal); 
+    return (diRolls.join(" & ") + " %Score: " + diTotal); 
 }
 
-//Accesses the last most recent roll, check if it is a d20 roll, 
+//Accesses the last most recent roll, check if it is a d20 roll,
+    //May need to access rollDB instead of diTotal when DB goes up. 
 //then add itself to that roll. 
 //Handles Advantage, & Disadvantage rolls as well.
 function rollInspiration() {
     var lastRoll = 0;
-    if (displaySides === 20) {
-	lastRoll = displayTotal;
+    if (diSides === 20) {
+	lastRoll = diTotal;
 	physics(1, 10);
 	rollDBizer();
-	return ("+" + displayTotal + " to " + lastRoll + ": " 
-		+ (lastRoll + displayTotal));
+	return ("+" + diTotal + " to " + lastRoll + ": " + (lastRoll + diTotal));
     } else {
 	return ("You can only add an inspiration die to a d20 roll.");
     }
 }
 
 //input for manual rolls (like if you're using real dice). changes public variables directly.
-function rollManual(diceNumber, diceSides, rolls) {
-    displayNumDc = diceNumber;
-    displaySides = diceSides;
+function rollManual(dNum, dSid, rolls) {
+    diNumbr = dNum;
+    diSides = dSid;
     //rolls needs to be an array.
-    displayRolls = rolls;
-    displayTotal = rolls.reduce(function(a ,b) {
+    diRolls = rolls;
+    diTotal = rolls.reduce(function(a ,b) {
 	return a + b;
     });
     rollDBizer();
+    wheatonize();
     return rollOut();
 }
 
