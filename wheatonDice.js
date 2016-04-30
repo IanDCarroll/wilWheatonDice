@@ -26,7 +26,8 @@
 var displayNumDc = 0,
     displaySides = 0,
     displayRolls = [],
-    displayTotal = 0;
+    displayTotal = 0,
+    displayWhton = "";
 
 //saved rolls go here so they can be accessed and analyzed (unitl a proper DB is made)
 //currnet version forgets after the battery of console.log()s are made. Need a proper DB, 
@@ -71,28 +72,30 @@ function rollDBizer() {
     rollDB.push(rollEntry);
 }
 
-//Separate output function, so that code is easy to delete.
+//Separate wheatonizer, so that code is easy to delete.
 //make it so every lowest possible roll that's rolled displays "Wheaton!" 
     //instead of the number
-//comment out any portion if you don't want Wil distracting you so much.
-//uncomment Percy if you're an optimist.
-function rollOut() {
+function wheaton() {
     if (displayTotal === displayNumDc) {
-	displayTotal = "Wheaton!";
+	displayWhton = "Wheaton!";
     } else if (displayTotal < (0.33 * (displaySides * displayNumDc))){
-	displayTotal += " lesser Wheaton.";
-    } /*else if (displayTotal === (displaySides * displayNumDc)) {
-	displayTotal = "Percy!";
+	displayWhton = "lesser Wheaton.";
+    } else if (displayTotal === (displaySides * displayNumDc)) {
+	displayWhton = "Percy!";
     } else if (displayTotal > (0.66 * (displaySides * displayNumDc))) {
-	displayTotal += " lesser Percy.";
-    }*/
+	displayWhton = "lesser Percy.";
+    } else {
+	displayWhton = "";
+    }
+}
 	
-    //returns a neat string that shows what you rolled, how each roll went, and the total.
-    //This will probably be numberfied and separated out when the actual UI gets built
+//returns a neat string that shows what you rolled, how each roll went, and the total.
+//This will probably be numberfied and separated out when the actual UI gets built
+function rollOut() {
     if (displayNumDc === 1) {
 	return ("1 d" + displaySides + ": " + displayTotal);
     } else { 
-	return (displayNumDc + " d" + displaySides + ": " + displayRolls.join(", ") + " Total: " + displayTotal);}
+	return (displayNumDc + " d" + displaySides + ": " + displayRolls.join(", ") + " Total: " + displayTotal + " " + displayWhton);}
 }
 
 //input functions.
@@ -100,6 +103,7 @@ function rollOut() {
 function roll(diceNumber, diceSides) {
     physics(diceNumber, diceSides);
     rollDBizer();
+    wheaton();
     return rollOut();
 }
 
