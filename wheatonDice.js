@@ -179,29 +179,35 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 //Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls.
 function rollAdvantage() {
     physics(2, 20);
-    diNumbr = "A";
+    diNumbr = 1;
     diTotal = Math.max(diRolls[0], diRolls[1]);
+    wheatonize();
+    diNumbr = "A";
     rollDBizer();
-    return (diRolls.join(" & ") + ". Result: " + diTotal);
+    return (diRolls.join(" & ") + ". Result: " + diTotal + " " + wheaton);
 }
 
 function rollDisadvantage() {
-    var rollTime = new Date();
     physics(2, 20);
-    diNumbr = "D";
+    diNumbr = 1;
     diTotal = Math.min(diRolls[0], diRolls[1]);
+    wheatonize();
+    diNumbr = "D";
     rollDBizer();
-    return (diRolls.join(" & ") + ". Result: " + diTotal);
+    return (diRolls.join(" & ") + ". Result: " + diTotal + " " + wheaton);
 }
 
 function rollPercent() {
     var rollTime = new Date();
     physics(2, 10);
-    diNumbr = "%";
+    diNumbr = 1;
+    diSides = 100;
     diTotal = ((diRolls[0] % 10) * 10) + (diRolls[1] % 10);
     if (diTotal === 0) diTotal = 100;
+    wheatonize();
+    diNumbr = "%";
     rollDBizer();
-    return (diRolls.join(" & ") + " %Score: " + diTotal); 
+    return (diRolls.join(" & ") + " %Score: " + diTotal + " " + wheaton); 
 }
 
 //Accesses the last most recent roll, check if it is a d20 roll,
