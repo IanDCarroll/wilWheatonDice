@@ -7,8 +7,7 @@
  * working. Much to be built! -Ian
  */
 
-//todo: fix "Wheaton!" so that they all do it.
-//make rollTime a public variable, or handle it in a better way.
+//todo: wheatonize rollMix(). 
 //actually have a saved rollDB.
 //allow the user to opt out of DBizing or wheatonizing.
 //add 1-10 importance DB element.
@@ -60,13 +59,17 @@ function physics(dNum, dSid) {
     diTotal = totally;
 }
 
+//timeStamp() acts as a serial number for the roll in rollDB.
+function timeStamp() {
+    var rollTime = new Date();
+    return rollTime.getTime();
+}
+
 //passes roll results to rollDB.
 function rollDBizer() {
-    var rollTime = new Date(),
-	rollEntry = [],
+    var rollEntry = [],
 
-    //rollTime set to Now in ms. Date function, roll stats organized to rollEntry
-    rollEntry = [rollTime.getTime(), diNumbr, diSides, diRolls, diTotal];
+    rollEntry = [timeStamp(), diNumbr, diSides, diRolls, diTotal];
 
     rollDB.push(rollEntry);
 }
@@ -113,64 +116,43 @@ types of dice to be rolled at the same time, but just in case,
 rollMix will be able to handle up to 6 different kinds of dice rolls. */
 function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3, 
 		 dNum4, dSid4, dNum5, dSid5, dNum6, dSid6) {
-    var diceMix = [],
-	mixTotal = 0,
-	diceRold = [],
+    var allRolls = [],
+	allDice = [],
+	allTotal = 0,
 	displayString;
 
-    physics(dNum1, dSid1);
-    rollDBizer();
-    diceRold.push(dNum1 + " d" + dSid1);
-    for (var i = 0; i < diRolls.length; i++) {
-	diceMix.push(diRolls[i]);
+    function theRoll(dNum, dSid) {
+	physics(dNum, dSid);
+	rollDBizer();
+   	allDice.push(dNum + " d" + dSid);
+	for (var i = 0; i < diRolls.length; i++) {
+	    allRolls.push(diRolls[i]);
+	}
     }
+
+    theRoll(dNum1, dSid1);
 
     if (dNum2) {
-	physics(dNum2, dSid2);
-	rollDBizer();
-	diceRold.push(dNum2 + " d" + dSid2);
-	for (var i = 0; i < diRolls.length; i++) {
-		diceMix.push(diRolls[i]);
-	}
+	theRoll(dNum2, dSid2);
     }
     if (dNum3) {
-	physics(dNum3, dSid3);
-	rollDBizer();
-	diceRold.push(dNum3 + " d" + dSid3);
-	for (var i = 0; i < diRolls.length; i++) {
-		diceMix.push(diRolls[i]);
-	}
+	theRoll(dNum3, dSid3);
     }
     if (dNum4) {
-	physics(dNum4, dSid4);
-	rollDBizer();
-	diceRold.push(dNum4 + " d" + dSid4);
-	for (var i = 0; i < diRolls.length; i++) {
-		diceMix.push(diRolls[i]);
-	}
+	theRoll(dNum4, dSid4);
     }
     if (dNum5) {
-	physics(dNum5, dSid5);
-	rollDBizer();
-	diceRold.push(dNum5 + " d" + dSid5);
-	for (var i = 0; i < diRolls.length; i++) {
-		diceMix.push(diRolls[i]);
-	}
+	theRoll(dNum5, dSid5);
     }
     if (dNum6) {
-	physics(dNum6, dSid6);
-	rollDBizer();
-	diceRold.push(dNum6 + " d" + dSid6);
-	for (var i = 0; i < diRolls.length; i++) {
-		diceMix.push(diRolls[i]);
-	}
+	theRoll(dNum6, dSid6);
     }
 
-    mixTotal = diceMix.reduce(function(a ,b) {
+    allTotal = allRolls.reduce(function(a ,b) {
 	return a + b;
     });
 
-    displayString = (diceRold.join(", ") + ": " + diceMix.join(", ") + " Total: " + mixTotal);
+    displayString = (allDice.join(", ") + ": " + allRolls.join(", ") + " Total: " + allTotal);
 
 
     return displayString;
