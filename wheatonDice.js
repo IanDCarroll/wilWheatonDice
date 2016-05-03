@@ -7,8 +7,7 @@
  * working. Much to be built! -Ian
  */
 
-//todo: wheatonize rollMix(). 
-//actually have a saved rollDB.
+//todo: actually have a saved rollDB.
 //allow the user to opt out of DBizing or wheatonizing.
 //add 1-10 importance DB element.
 //add standard juju options.
@@ -119,7 +118,32 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
     var allRolls = [],
 	allDice = [],
 	allTotal = 0,
+	allWhton = "",
 	displayString;
+
+    function countWils() {
+	var lowest = dNum1 + dNum2 + dNum3 + dNum4 + dNum5 + dNum6,
+	    highest = dNum1 * dSid1;
+
+	if (dNum2 && dSid2) { highest += dNum2 * dSid2 }
+	if (dNum3 && dSid3) { highest += dNum3 * dSid3 }
+	if (dNum4 && dSid4) { highest += dNum4 * dSid4 }
+	if (dNum5 && dSid5) { highest += dNum5 * dSid5 }
+	if (dNum6 && dSid6) { highest += dNum6 * dSid6 }
+
+	if (allTotal === lowest) {
+	    allWhton = "Wheaton!";
+	}
+	else if (allTotal < 0.33 * highest) {
+	    allWhton = "Lesser Wheaton.";
+	}
+	else if (allTotal === highest) {
+	    allWhton = "Percy!"; 
+	}
+	else if (allTotal > 0.66 * highest) {
+	    allWhton = "Lesser Percy."; 
+	}
+    }
 
     function theRoll(dNum, dSid) {
 	physics(dNum, dSid);
@@ -132,27 +156,20 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 
     theRoll(dNum1, dSid1);
 
-    if (dNum2) {
-	theRoll(dNum2, dSid2);
-    }
-    if (dNum3) {
-	theRoll(dNum3, dSid3);
-    }
-    if (dNum4) {
-	theRoll(dNum4, dSid4);
-    }
-    if (dNum5) {
-	theRoll(dNum5, dSid5);
-    }
-    if (dNum6) {
-	theRoll(dNum6, dSid6);
-    }
+    if (dNum2) { theRoll(dNum2, dSid2); }
+    if (dNum3) { theRoll(dNum3, dSid3); }
+    if (dNum4) { theRoll(dNum4, dSid4); }
+    if (dNum5) { theRoll(dNum5, dSid5); }
+    if (dNum6) { theRoll(dNum6, dSid6); }
 
     allTotal = allRolls.reduce(function(a ,b) {
 	return a + b;
     });
 
-    displayString = (allDice.join(", ") + ": " + allRolls.join(", ") + " Total: " + allTotal);
+    countWils();
+
+    displayString = (allDice.join(", ") + ": " + allRolls.join(", ") + 
+		     " Total: " + allTotal + " " + allWhton);
 
 
     return displayString;
@@ -239,9 +256,5 @@ console.log(rollManual(1, 20, [20]));
 console.log(rollInspiration());
 console.log(rollMix(2, 12));
 console.log(rollMix(2, 12, 3, 10));
-console.log(rollPercent());
-console.log(rollPercent());
-console.log(rollPercent());
-console.log(rollPercent());
 console.log(rollPercent());
 console.log(rollDB);
