@@ -25,5 +25,9 @@
  * If done right, this may have aplications beyond playing games.
  */
 
+//todo: research accelorometers. What output to they give? 
+//This little beast needs to be designed to eat that kind of output 
+//and poop out a dice roll.
+
 //todo: research physics formulae, 
 //and how other games derrive their realistic-looking physics
