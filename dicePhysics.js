@@ -17,12 +17,17 @@
  * 3. The release data from the accelorameter to determine trajectory
  *    and more importantly, The vector of contact with the virtual table.
  *
+ * additional variables:
+ * The distance of the throw from the table.
+ * The weight of the die.
+ * The friction coeficient based on material of the die and table.
+ *
  * It will return the die's upward face as the result of the roll.
  * 
  * Settable constants such as height from, 
  * and friction coeficient of the virtual table will also play roles.
  * 
- * If done right, this may have aplications beyond playing games.
+ * This may have aplications beyond playing games.
  */
 
 //todo: research accelorometers. What output to they give? 
