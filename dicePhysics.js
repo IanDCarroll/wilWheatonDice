@@ -13,8 +13,8 @@
  *
  * It will need to accept as input:
  * 1. The initial facing of the die before it is thrown.
- * 2. The shake data from the accelorameter to determine the spin.
- * 3. The release data from the accelorameter to determine trajectory
+ * 2. The shake data from the accelerometer and gyro to determine the spin.
+ * 3. The release data from the accelerometer/gyro to determine trajectory
  *    and more importantly, The vector of contact with the virtual table.
  *
  * additional variables:
@@ -30,7 +30,7 @@
  * This may have aplications beyond playing games.
  */
 
-// Accelerometers ouput a values array with 3 elements.
+// Android Accelerometers ouput a values array with 3 elements.
 // each element is a floating value representing m/s squared.
 // when lying on its back: values[0] == 0, values[1] == 0, values[2] == 9.8 
 // one chalenge will be to make the program be able to distinguish 
@@ -42,6 +42,15 @@
 // if values[1] == -9.8 the device is upside down.
 // if values[2] == 9.8 the device's display is facing up.
 // if values[2] == -9.8 the device's display is facing down.
+
+// Apple accelerometers ouput in G's. 1G == 9.8 m/s squared.
+// todo: research more into apple accelerometers. 
+// Do they output an array too?
+// Make sure the final app is omnivorous of both data in G's 
+// and m/s squared
+
+//todo: research gyroscopes. That's what gather's data on device rotation, 
+//which will be necessary for accurate vectors and dice spin simulation.
 
 //todo: find some approriate algorythms to do two things:
 // 1. Translate values[0,1,2] into vectors.
