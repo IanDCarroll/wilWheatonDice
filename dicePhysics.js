@@ -1,5 +1,5 @@
 /* Dice Physics
- * this is open source, please refer to the licences for details.
+ * this is open source, please refer to the licence for details.
  * 
  * Dice Physics is designed to replace Math.random() with the physics 
  * of actual dicerolls.
@@ -18,21 +18,34 @@
  *    and more importantly, The vector of contact with the virtual table.
  *
  * additional variables:
- * The distance of the throw from the table.
- * The weight of the die.
- * The friction coeficient based on material of the die and table.
+ * 1. A simple 1D Inertial Navigation System to get the vertical distance 
+ *    of the throw from the table.
+ * 2. The weight of the die.
+ * 3. The friction coeficient based on material of the die and table.
+ *    (This may lend itself to table tops and dice modules simulating 
+ *     varrying materials, like wood, or marble, or velvet)
  *
  * It will return the die's upward face as the result of the roll.
- * 
- * Settable constants such as height from, 
- * and friction coeficient of the virtual table will also play roles.
  * 
  * This may have aplications beyond playing games.
  */
 
-//todo: research accelorometers. What output to they give? 
-//This little beast needs to be designed to eat that kind of output 
-//and poop out a dice roll.
+// Accelerometers ouput a values array with 3 elements.
+// each element is a floating value representing m/s squared.
+// when lying on its back: values[0] == 0, values[1] == 0, values[2] == 9.8 
+// one chalenge will be to make the program be able to distinguish 
+// the signal from the noise.
+// assume all other values == 0
+// if values[0] == 9.8, the device is resting on its left side.
+// if values[0] == -9.8, the device is resting on its right side. and so on.
+// if values[1] == 9.8, the device is standing upright.
+// if values[1] == -9.8 the device is upside down.
+// if values[2] == 9.8 the device's display is facing up.
+// if values[2] == -9.8 the device's display is facing down.
 
-//todo: research physics formulae, 
-//and how other games derrive their realistic-looking physics
+//todo: find some approriate algorythms to do two things:
+// 1. Translate values[0,1,2] into vectors.
+// 2. Translate values[0,1,2] into a 1D inertial navigation system 
+//    to get the height the die is from the table when it is released.
+
+//todo: research how other games build their physics
