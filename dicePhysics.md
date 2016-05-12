@@ -56,18 +56,15 @@
 // and m/s squared
 // though it may be prudent to have 3 versions for speed considerations.
 
-// Also I don't know that JS is the best language to write this in.
-// Python may be a better alternative for fast math.
+// todo: research gyroscopes. That's what gather's data on device rotation, 
+// which will be necessary to return the angle of the rollbox to the table.
 
-//todo: research gyroscopes. That's what gather's data on device rotation, 
-//which will be necessary to return the angle of the rollbox to the table.
-
-//todo: find some approriate algorythms to do two things:
+// todo: find some approriate algorythms to do two things:
 // 1. Translate values[0,1,2] into vectors.
 // 2. Translate values[0,1,2] into a 1D inertial navigation system 
 //    to get the height the die is from the table when it is released.
 
-//todo: research how other games build their physics
+// todo: research how other games build their physics
 
 
 
@@ -112,7 +109,7 @@
  *		b. Distance - Uses Inertial Navigation to determine 
  *		   distance of device from the closest point of the surface.
  *		c. SetDistance0 - Calibrates sensors for Inertial Nav.
- * 3.) MediumDensity:
+ * 3.) Medium:
  *	properties:
  *		a. Resistance - most likely air resistance. 
  *		   Should be negligible in most cases.
@@ -163,4 +160,8 @@
  *		   returns the value of the uptuned face
  *		   when die collides with table && 
  *		   vector and spin return to 0.
+ * 15.) Roll:
+ *	properties:
+ *		a. calls Setup, calls Event, 
+ *		   Returns Result.
  */
