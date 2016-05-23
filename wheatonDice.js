@@ -7,18 +7,6 @@
  * working. Much to be built! -Ian
  */
 
-//todo: actually have a saved rollDB.
-//allow the user to opt out of DBizing or wheatonizing.
-//add 1-10 importance DB element.
-//add standard juju options.
-//add home-spun juju options.
-//port to Java, Python, Ruby.
-//somehow access accelorometer.
-//build propper physics engine.
-//have something that mines data for analysis.
-//somehow build GUI for rolls and DB analysis.
-//when all that's done, start building integrated RPG framework for more tools.
-
 //public variables
 var diNumbr = 0,
     diSides = 0,
