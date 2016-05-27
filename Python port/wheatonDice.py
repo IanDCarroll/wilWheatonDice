@@ -2,13 +2,16 @@
 
 #import neccesary libraries
 from datetime import datetime
+#placeholder for physics module
+from random import random
 
 #public variables
+dieTime = ''
 diNumbr = 0
 diSides = 0
 diRolls = []
 diTotal = 0
-wheaton = ""
+wheaton = ''
 #placeholder for Database pusher
 rollDB = []
 
@@ -18,10 +21,15 @@ def physics(dNum, dSid)
     diSides = dSid
     diNumbr = dNum
 
-def timeStamp()
-    #literal from JS. Is this function even necessary in python?
-    now = datetime.now()
-    return now
+    for (i = 0; i < dNum; i++)
+	#placeholder for physics function
+	rolls.append((int((random()) * (dSid)))+1)
+
+    diRolls = rolls
+
+    #sum the rolls list
+    diTotal = sum(rolls)
+    dieTime = datetime.now()
 
 def rollDBizer()
 
