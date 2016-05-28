@@ -6,12 +6,7 @@ from datetime import datetime
 from random import random
 
 #public variables
-dieTime = ''
-diNumbr = 0
-diSides = 0
-diRolls = []
-diTotal = 0
-wheaton = ''
+
 #diInsan = 'Sanity Error!'
 
 #placeholder for Database pusher
@@ -59,11 +54,9 @@ def rollOut():
 #Does it have to do with a lack of closures?
 #Or am I missing a syntax subtlety somewhere here?
 # ***!!!*** we need to set all variables to global under every function!
-def roll(dNum, dSid):
-    global diNumbr 
-    diNumbr = dNum
-    global diSides 
-    diSides = dSid
+def roll(dNum, dSid, diStuff): 
+    diStuff[1] = dNum
+    diStuff[2] = dSid
 
     physics()
     rollDBizer()
@@ -82,4 +75,10 @@ def roll(dNum, dSid):
 
 #def rollManual():
 
-print roll(1,20)
+def main():
+    distuff = {dieTime:'',diNumbr:0,diSides:0,diRolls:[],diTotal:0,wheaton:'']
+    print roll(1,20)
+
+
+if __name__ == '__main__':
+    main()
