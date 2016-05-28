@@ -8,32 +8,66 @@
  */
 
 //public variables
-var diNumbr = 0,
-    diSides = 0,
-    diRolls = [],
-    diTotal = 0,
-    wheaton = "";
+var diNumbr,
+    diSides,
+    diRolls,
+    diTotal,
+    wheaton,
+    diInsan = 'Sanity Error!';
 
 //saved rolls go here so they can be accessed and analyzed (unitl a proper DB is made)
 //currnet version forgets after the battery of console.log()s are made. Need a proper DB, 
 //but this is proof of concept. todo: db that can store previous rolls.
 var rollDB = [];
 
+//checks to make sure user input values make sense.
+//auto corrects in certain cases.
+function rollSanity() {
+    //isInt borrowed from http://stackoverflow.com/questions/14636536
+    function isInt(value) {
+	var x;
+	return isNaN(value)?!1:(x=parseFloat(value),(0|x)===x);
+    }
+
+    if (diNumbr === undefined) {
+	diInsan = 'The outcome of your undefined number of dice\n'+
+		'with between zero and infinity number of sides each\n'+
+		'rolls unobserved in a mixed state of quantum flux\n'+
+		'forever both Percy and Wheaton, like that poor cat.\n'+ 
+		'Thus it remains with the Tao that cannot be told.\n\n'+
+		'Please define the number of dice and their sides\n'+
+		'if you prefer your rolls collapsed, measurable and pure.';
+    } else if (diNumbr === 0) {
+	diInsan = '    If zero dice are thrown in simulation,\n'+
+		'Even if someone is there to observe the outcome -\n'+
+		'    Do they still roll poorly for Wil Wheaton?';
+    } else if (diSides === undefined) {
+	diSides = diNumbr;
+	diNumbr = 1;
+	diInsan = undefined;
+    } else if (diSides === 0) {
+	diInsan = 'Zero sides?! Is it even there?!';
+    } else if (diSides === 1) {
+	diInsan = 'Ok, Escher-trippiness of a one-sided dice aside,\n'+
+		'Exactly how did you not know the outcome of this roll?';
+    } else if (!(isInt(diNumbr)) || !(isInt(diNumbr))) {
+	diInsan = 'Please make sure you entered integers\n'+
+	      'for the number of dice and how many sides they have'
+    } else { 
+	diInsan = undefined; 
+    }
+}
+
 /*the physics engine (to be built: a different abstract function than builtin Math.random().
 It will access the device's accelerometer and add physics + chaos to generate the roll.
 it'll be totally sweet!*/
-function physics(dNum, dSid) {
+function physics() {
 
     var rolls = [];
 
-    diSides = dSid;
-    diNumbr = dNum;
-
-    //warning! no edge case protection! You gotta use it just right! Todo: handle edge cases
-
     //rolls each die separately then pushes to "rolls" array.
-    for (var i = 0; i < dNum; i++) {	
-	    rolls.push(Math.ceil( Math.random() * dSid ));     
+    for (var i = 0; i < diNumbr; i++) {	
+	    rolls.push(Math.ceil( Math.random() * diSides ));     
     }
 
     diRolls = rolls;
@@ -91,10 +125,19 @@ function rollOut() {
 //input functions.
 //uses public variables to access physics() function.
 function roll(dNum, dSid) {
-    physics(dNum, dSid);
-    rollDBizer();
-    wheatonize();
-    return rollOut();
+    diNumbr = dNum;
+    diSides = dSid;
+
+    rollSanity();
+    if (diInsan) { return diInsan;
+    } else {
+
+	physics();
+	rollDBizer();
+	wheatonize();
+	return rollOut();
+
+    }
 }
 
 /*Mixed dice rolls. There are 6 Standard dice in D&D.
@@ -134,11 +177,18 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
     }
 
     function theRoll(dNum, dSid) {
-	physics(dNum, dSid);
-	rollDBizer();
-   	allDice.push(dNum + " d" + dSid);
-	for (var i = 0; i < diRolls.length; i++) {
-	    allRolls.push(diRolls[i]);
+	diNumbr = dNum;
+	disides = dSid;
+	rollSanity()
+	if (diInsan) { 
+	    return diInsan;
+	} else {
+	    physics();
+	    rollDBizer();
+   	    allDice.push(dNum + " d" + dSid);
+	    for (var i = 0; i < diRolls.length; i++) {
+		allRolls.push(diRolls[i]);
+	    }
 	}
     }
 
@@ -165,7 +215,9 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 
 //Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls.
 function rollAdvantage() {
-    physics(2, 20);
+    diNumbr = 2;
+    diSides = 20;
+    physics();
     diNumbr = 1;
     diTotal = Math.max(diRolls[0], diRolls[1]);
     wheatonize();
@@ -175,7 +227,9 @@ function rollAdvantage() {
 }
 
 function rollDisadvantage() {
-    physics(2, 20);
+    diNumbr = 2;
+    disides = 20;
+    physics();
     diNumbr = 1;
     diTotal = Math.min(diRolls[0], diRolls[1]);
     wheatonize();
@@ -186,7 +240,9 @@ function rollDisadvantage() {
 
 function rollPercent() {
     var rollTime = new Date();
-    physics(2, 10);
+    diNumbr = 2;
+    diSides = 10;
+    physics();
     diNumbr = 1;
     diSides = 100;
     diTotal = ((diRolls[0] % 10) * 10) + (diRolls[1] % 10);
@@ -205,7 +261,9 @@ function rollInspiration() {
     var lastRoll = 0;
     if (diSides === 20) {
 	lastRoll = diTotal;
-	physics(1, 10);
+	diNumbr = 1;
+	disides = 10;
+	physics();
 	rollDBizer();
 	return ("+" + diTotal + " to " + lastRoll + ": " + (lastRoll + diTotal));
     } else {
@@ -227,7 +285,8 @@ function rollManual(dNum, dSid, rolls) {
     return rollOut();
 }
 
-//manual testing, no edge cases yet.
+//manual testing.
+console.log(roll(20));
 console.log(roll(1,20));
 console.log(rollInspiration());
 console.log(roll(2,12));
@@ -242,7 +301,6 @@ console.log(rollManual(2, 12, [5, 2]));
 console.log(rollInspiration());
 console.log(rollManual(1, 20, [20]));
 console.log(rollInspiration());
-console.log(rollMix(2, 12));
 console.log(rollMix(2, 12, 3, 10));
 console.log(rollPercent());
 console.log(rollDB);
