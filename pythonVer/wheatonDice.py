@@ -5,48 +5,49 @@ from datetime import datetime
 #placeholder for physics module
 from random import random
 
-#public variables
+#public variable]
 
 #diInsan = 'Sanity Error!'
 
 #placeholder for Database pusher
-rollDB = []
 
 #Internal functions
 #def rollSanity():
 
-def physics():
+def physics(diStuff):
     rolls = []
     counter = 0
-    while counter < diNumbr:
+    while counter < diStuff['diNumbr']:
 	#placeholder for physics function
-	rolls.append((int((random()) * (diSides)))+1)
+	rolls.append((int((random()) * (diStuff['diSides'])))+1)
 	counter += 1
 
-    diRolls = rolls
+    diStuff['diRolls'] = rolls
 
     #sum the rolls list
-    diTotal = sum(rolls)
-    dieTime = datetime.now()
+    diStuff['diTotal'] = sum(rolls)
+    diStuff['diTime'] = datetime.now()
 
-def rollDBizer():
-    rollEntry = [dieTime,diNumbr,diSides,diRolls,diTotal]
+def rollDBizer(diStuff, rollDB):
+    rollEntry = [diStuff['diTime'],diStuff['diNumbr'],diStuff['diSides'],
+	diStuff['diRolls'],diStuff['diTotal']]
     rollDB.append(rollEntry)
 
-def wheatonize():
-    if diTotal == diNumbr:
-	wheaton = ' Wheaton!'
-    elif diTotal == diNumbr * diSides:
-	wheaton = ' Percy!'
-    elif diTotal < (diNumbr * diSides)/3:
-	wheaton = ' lesser wheaton.'
-    elif diTotal > ((diNumbr * diSides)/3)*2:
-	wheaton = ' lesser Percy.'
+def wheatonize(diStuff):
+    if diStuff['diTotal'] == diStuff['diNumbr']:
+	diStuff['wheaton'] = ' Wheaton!'
+    elif diStuff['diTotal'] == diStuff['diNumbr'] * diStuff['diSides']:
+	diStuff['wheaton'] = ' Percy!'
+    elif diStuff['diTotal'] < (diStuff['diNumbr'] * diStuff['diSides'])/3:
+	diStuff['wheaton'] = ' lesser wheaton.'
+    elif diStuff['diTotal'] > ((diStuff['diNumbr'] * diStuff['diSides'])/3)*2:
+	diStuff['wheaton'] = ' lesser Percy.'
     else: 
-	wheaton = ''
+	diStuff['wheaton'] = ''
 
-def rollOut():
-    return "%s d%s: %s Total: %s%s" % (diNumbr, diSides, diRolls, diTotal, wheaton)
+def rollOut(diStuff):
+    return "%s d%s: %s Total: %s%s" % (diStuff['diNumbr'], diStuff['diSides'],
+	diStuff['diRolls'], diStuff['diTotal'], diStuff['wheaton'])
 
 #calling functions
 #problem: only the return statement is executing.
@@ -54,14 +55,14 @@ def rollOut():
 #Does it have to do with a lack of closures?
 #Or am I missing a syntax subtlety somewhere here?
 # ***!!!*** we need to set all variables to global under every function!
-def roll(dNum, dSid, diStuff): 
-    diStuff[1] = dNum
-    diStuff[2] = dSid
+def roll(dNum, dSid, diStuff, rollDB): 
+    diStuff['diNumbr'] = dNum
+    diStuff['diSides'] = dSid
 
-    physics()
-    rollDBizer()
-    wheatonize()
-    return rollOut()
+    physics(diStuff)
+    rollDBizer(diStuff, rollDB)
+    wheatonize(diStuff)
+    return rollOut(diStuff)
 
 #def rollMix():
 
@@ -76,8 +77,11 @@ def roll(dNum, dSid, diStuff):
 #def rollManual():
 
 def main():
-    distuff = {dieTime:'',diNumbr:0,diSides:0,diRolls:[],diTotal:0,wheaton:'']
-    print roll(1,20)
+    diStuff = {'diTime':'','diNumbr':0,'diSides':0,
+		'diRolls':[],'diTotal':0,'wheaton':''}
+    rollDB = []
+
+    print roll(1,20,diStuff,rollDB)
 
 
 if __name__ == '__main__':
