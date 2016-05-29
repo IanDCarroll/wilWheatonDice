@@ -1,68 +1,56 @@
-#python port of wheatonDice
+#python port of whtnDice:
 
 #import neccesary libraries
 from datetime import datetime
 #placeholder for physics module
 from random import random
 
-#public variable]
-
-#diInsan = 'Sanity Error!'
-
-#placeholder for Database pusher
-
-#Internal functions
-#def rollSanity():
-
-def physics(diStuff):
+def physics(di):
     rolls = []
     counter = 0
-    while counter < diStuff['diNumbr']:
-	#placeholder for physics function
-	rolls.append((int((random()) * (diStuff['diSides'])))+1)
+    while counter < di['nmbr']:
+	#random.randint? Same thing.
+	#Sam @ https://github.com/swacad really helped on this
+	#and on ironing out the code so it actually runs.
+	#import numpy as nm
+	#import os
+	#np.random.seed(int(os.urandom(4).encode('hex'),16))
+	rolls.append((int((random()) * (di['sids'])))+1)
 	counter += 1
 
-    diStuff['diRolls'] = rolls
+    di['rols'] = rolls
+    di['totl'] = sum(rolls)
+    di['time'] = datetime.now().isoformat(' ')
 
-    #sum the rolls list
-    diStuff['diTotal'] = sum(rolls)
-    diStuff['diTime'] = datetime.now()
+def rollDBizer(di, rolDB):
+    rolNtry = [di['time'],di['nmbr'],di['sids'],di['rols'],di['totl']]
+    rolDB.append(rolNtry)
 
-def rollDBizer(diStuff, rollDB):
-    rollEntry = [diStuff['diTime'],diStuff['diNumbr'],diStuff['diSides'],
-	diStuff['diRolls'],diStuff['diTotal']]
-    rollDB.append(rollEntry)
-
-def wheatonize(diStuff):
-    if diStuff['diTotal'] == diStuff['diNumbr']:
-	diStuff['wheaton'] = ' Wheaton!'
-    elif diStuff['diTotal'] == diStuff['diNumbr'] * diStuff['diSides']:
-	diStuff['wheaton'] = ' Percy!'
-    elif diStuff['diTotal'] < (diStuff['diNumbr'] * diStuff['diSides'])/3:
-	diStuff['wheaton'] = ' lesser wheaton.'
-    elif diStuff['diTotal'] > ((diStuff['diNumbr'] * diStuff['diSides'])/3)*2:
-	diStuff['wheaton'] = ' lesser Percy.'
+def whtnize(di):
+    if di['totl'] == di['nmbr']:
+	di['whtn'] = ' Wheaton!'
+    elif di['totl'] == di['nmbr'] * di['sids']:
+	di['whtn'] = ' Percy!'
+    elif di['totl'] < (di['nmbr'] * di['sids'])/3:
+	di['whtn'] = ' lesser wheaton.'
+    elif di['totl'] > ((di['nmbr'] * di['sids'])/3)*2:
+	di['whtn'] = ' lesser Percy.'
     else: 
-	diStuff['wheaton'] = ''
+	di['whtn'] = ''
 
-def rollOut(diStuff):
-    return "%s d%s: %s Total: %s%s" % (diStuff['diNumbr'], diStuff['diSides'],
-	diStuff['diRolls'], diStuff['diTotal'], diStuff['wheaton'])
+def rollOut(di):
+    return "%s d%s: %s Total: %s%s" % (di['nmbr'], di['sids'],
+	di['rols'], di['totl'], di['whtn'])
 
 #calling functions
-#problem: only the return statement is executing.
-#All Other outside-the-scope-of-the-function calls are not executing.
-#Does it have to do with a lack of closures?
-#Or am I missing a syntax subtlety somewhere here?
-# ***!!!*** we need to set all variables to global under every function!
-def roll(dNum, dSid, diStuff, rollDB): 
-    diStuff['diNumbr'] = dNum
-    diStuff['diSides'] = dSid
+def roll(dNum,dSid,di,rolDB): 
+    di['nmbr'] = dNum
+    di['sids'] = dSid
 
-    physics(diStuff)
-    rollDBizer(diStuff, rollDB)
-    wheatonize(diStuff)
-    return rollOut(diStuff)
+    physics(di)
+    rollDBizer(di, rolDB)
+    whtnize(di)
+    return rollOut(di)
 
 #def rollMix():
 
@@ -77,12 +65,10 @@ def roll(dNum, dSid, diStuff, rollDB):
 #def rollManual():
 
 def main():
-    diStuff = {'diTime':'','diNumbr':0,'diSides':0,
-		'diRolls':[],'diTotal':0,'wheaton':''}
-    rollDB = []
+    di = {'time':'','nmbr':0,'sids':0,'rols':[],'totl':0,'whtn':''}
+    rolDB = []
 
-    print roll(1,20,diStuff,rollDB)
-
+    print roll(1,20,di,rolDB)
 
 if __name__ == '__main__':
     main()
