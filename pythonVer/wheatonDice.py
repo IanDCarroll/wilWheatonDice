@@ -3,19 +3,19 @@
 #import neccesary libraries
 from datetime import datetime
 #placeholder for physics module
-from random import random
+import numpy as np
+import os
 
 def physics(di):
     rolls = []
     counter = 0
     while counter < di['nmbr']:
-	#random.randint? Same thing.
 	#Sam @ https://github.com/swacad really helped on this
 	#and on ironing out the code so it actually runs.
-	#import numpy as nm
-	#import os
-	#np.random.seed(int(os.urandom(4).encode('hex'),16))
-	rolls.append((int((random()) * (di['sids'])))+1)
+	#this is a cryptogrphically secure seed, 
+	#so it's not predictible even by a really awesome computer!
+	np.random.seed(int(os.urandom(4).encode('hex'),16))
+	rolls.append((int((np.random.random()) * (di['sids'])))+1)
 	counter += 1
 
     di['rols'] = rolls
