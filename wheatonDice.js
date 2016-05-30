@@ -122,9 +122,8 @@ function rollOut() {
 		" Total: " + di.totl + " " + di.whtn);}
 }
 
-//input functions.
-//uses public variables to access physics() function.
-function roll(dNum, dSid) {
+//the main simple dice roll manager
+function dice(dNum, dSid) {
     di.nmbr = dNum;
     di.sids = dSid;
 
@@ -283,13 +282,32 @@ function rollManual(dNum, dSid, rolls) {
     return rollOut();
 }
 
+function roll(rollType, dNum, dSid, arg3, arg4, arg5, arg6, 
+			arg7, arg8, arg9, argA, argB, argC) {
+    if (rollType === 'dice') {
+	return dice(dNum, dSid);	
+    } else if (rollType === 'mix') {
+	return rollMix(dNum, dSid, arg3, arg4, arg5, arg6, 
+		       arg7, arg8, arg9, argA, argB, argC);
+    } else if (rollType === 'advantage') {
+	return rollAdvantage();
+    } else if (rollType === 'disadvantage') {
+	return rollDisadvantage();
+    } else if (rollType === 'percent') {
+	return rollPercent();
+    } else if (rollType === 'inspiration') {
+	return rollInspiration();
+    } else if (rollType === 'maunual') {
+	return rollManual(dNum, dSid, arg3);
+    }
+}
 //manual testing.
-console.log(roll(20));
-console.log(roll(1,20));
+console.log(dice(20));
+console.log(dice(1,20));
 console.log(rollInspiration());
-console.log(roll(2,12));
+console.log(dice(2,12));
 console.log(rollInspiration());
-console.log(roll(10,6));
+console.log(dice(10,6));
 console.log(rollAdvantage());
 console.log(rollInspiration());
 console.log(rollDisadvantage());
