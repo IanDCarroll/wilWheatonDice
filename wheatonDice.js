@@ -98,7 +98,7 @@ function rollDBizer() {
 //Separate di.whtnizer, so that code is easy to delete.
 //make it so every lowest possible roll that's rolled displays "Wheaton!" 
     //instead of the number
-function wheatonize() {
+function whtnize() {
     if (di.totl === di.nmbr) {
 	di.whtn = "Wheaton!";
     } else if (di.totl < (0.33 * (di.nmbr * di.sids))){
@@ -133,7 +133,7 @@ function dice(dNum, dSid) {
 
 	physics();
 	rollDBizer();
-	wheatonize();
+	whtnize();
 	return rollOut();
 
     }
@@ -219,7 +219,7 @@ function rollAdvantage() {
     physics();
     di.nmbr = 1;
     di.totl = Math.max(di.rols[0], di.rols[1]);
-    wheatonize();
+    whtnize();
     di.nmbr = "A";
     rollDBizer();
     return (di.rols.join(" & ") + ". Result: " + di.totl + " " + di.whtn);
@@ -231,7 +231,7 @@ function rollDisadvantage() {
     physics();
     di.nmbr = 1;
     di.totl = Math.min(di.rols[0], di.rols[1]);
-    wheatonize();
+    whtnize();
     di.nmbr = "D";
     rollDBizer();
     return (di.rols.join(" & ") + ". Result: " + di.totl + " " + di.whtn);
@@ -246,7 +246,7 @@ function rollPercent() {
     di.sids = 100;
     di.totl = ((di.rols[0] % 10) * 10) + (di.rols[1] % 10);
     if (di.totl === 0) di.totl = 100;
-    wheatonize();
+    whtnize();
     di.nmbr = "%";
     rollDBizer();
     return (di.rols.join(" & ") + " %Score: " + di.totl + " " + di.whtn); 
@@ -278,10 +278,11 @@ function rollManual(dNum, dSid, rolls) {
     di.rols = rolls;
     di.totl = rolls.reduce(function(a ,b) { return a + b; });
     rollDBizer();
-    wheatonize();
+    whtnize();
     return rollOut();
 }
 
+//returns undefined...
 function roll(rollType, dNum, dSid, arg3, arg4, arg5, arg6, 
 			arg7, arg8, arg9, argA, argB, argC) {
     if (rollType === 'dice') {
@@ -303,7 +304,7 @@ function roll(rollType, dNum, dSid, arg3, arg4, arg5, arg6,
 }
 //manual testing.
 console.log(dice(20));
-console.log(dice(1,20));
+console.log(roll(dice,1,20));
 console.log(rollInspiration());
 console.log(dice(2,12));
 console.log(rollInspiration());

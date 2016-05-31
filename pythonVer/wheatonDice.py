@@ -54,9 +54,35 @@ def roll(dNum,dSid,di,rolDB):
 
 #def rollMix():
 
-#def rollAdvantage():
+def rollHigher(dNum,dSid,di,rolDB):
+    di['nmbr'] = dNum
+    di['sids'] = dSid
+    physics(di)
 
-#def rollDisadvantage():
+    di['nmbr'] = 1
+    sort = sorted(di['rols'], key=None, reverse=True)
+    di['totl'] = sort[0]
+    whtnize(di)
+
+    di['nmbr'] = 'H'
+    rollDBizer(di, rolDB)
+
+    return rollOut(di)
+
+def rollLower(dNum,dSid,di,rolDB):
+    di['nmbr'] = dNum
+    di['sids'] = dSid
+    physics(di)
+
+    di['nmbr'] = 1
+    sort = sorted(di['rols'])
+    di['totl'] = sort[0]
+    whtnize(di)
+
+    di['nmbr'] = 'L'
+    rollDBizer(di, rolDB)
+
+    return rollOut(di)
 
 #def rollPercent():
 
@@ -69,6 +95,8 @@ def main():
     rolDB = []
 
     print roll(1,20,di,rolDB)
+    print rollHigher(2,20,di,rolDB)
+    print rollLower(2,20,di,rolDB)
 
 if __name__ == '__main__':
     main()
