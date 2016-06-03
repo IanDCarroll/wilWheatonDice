@@ -22,7 +22,7 @@ def physics(di):
     di['totl'] = sum(rolls)
     di['time'] = datetime.now().isoformat(' ')
 
-def rollDBizer(di, rolDB):
+def rolDBize(di, rolDB):
     rolNtry = [di['time'],di['nmbr'],di['sids'],di['rols'],di['totl']]
     rolDB.append(rolNtry)
 
@@ -48,7 +48,7 @@ def roll(dNum,dSid,di,rolDB):
     di['sids'] = dSid
 
     physics(di)
-    rollDBizer(di, rolDB)
+    rolDBize(di, rolDB)
     whtnize(di)
     return rollOut(di)
 
@@ -65,7 +65,7 @@ def rollHigher(dNum,dSid,di,rolDB):
     whtnize(di)
 
     di['nmbr'] = 'H'
-    rollDBizer(di, rolDB)
+    rolDBize(di, rolDB)
 
     return rollOut(di)
 
@@ -80,13 +80,36 @@ def rollLower(dNum,dSid,di,rolDB):
     whtnize(di)
 
     di['nmbr'] = 'L'
-    rollDBizer(di, rolDB)
+    rolDBize(di, rolDB)
 
     return rollOut(di)
 
-#def rollPercent():
+def rollDigit(dNum,dSid,di,rolDB):
+    di['nmbr'] = dNum
+    di['sids'] = dSid
+    physics(di)
 
-#def rollInspiration():
+    di['rols'].reverse()
+    di['totl'] = 0
+    count = 0
+    for roll in di['rols']:
+	if count == 0:
+	    di['totl'] += (roll % di['sids'])
+	    count += 1 
+	else:
+	    di['totl'] += (roll % di['sids']) * (di['sids'] ** count)
+	    count += 1
+    di['sids'] = di['sids'] ** di['nmbr']
+    if di['totl'] == 0: di['totl'] = di['sids']
+
+    di['nmbr'] = 1
+    di['rols'].reverse()
+    whtnize(di)
+    di['nmbr'] = 'D'
+
+    return rollOut(di)
+
+#def rollExtra():
 
 #def rollManual():
 
@@ -97,6 +120,13 @@ def main():
     print roll(1,20,di,rolDB)
     print rollHigher(2,20,di,rolDB)
     print rollLower(2,20,di,rolDB)
+    print rollDigit(2,10,di,rolDB)
+    #print rollDigit(4,10,di,rolDB)
+    #print rollDigit(5,2,di,rolDB)
+    #print rollDigit(2,4,di,rolDB)
+    #print rollDigit(2,8,di,rolDB)
+    #print rollDigit(2,12,di,rolDB)
+    #print rollDigit(2,20,di,rolDB)
 
 if __name__ == '__main__':
     main()

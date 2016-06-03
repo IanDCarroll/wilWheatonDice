@@ -13,16 +13,18 @@ var di = {  nmbr:undefined,
     	    rols:undefined,
     	    totl:undefined,
     	    whtn:undefined,
-    	    insn:'Sanity Error!' };
+    	    insn:'Sanity Error!'
+	    //todo: getters and setters	 
+	};
 
 //saved rolls go here so they can be accessed and analyzed (unitl a proper DB is made)
 //currnet version forgets after the battery of console.log()s are made. Need a proper DB, 
 //but this is proof of concept. todo: db that can store previous rolls.
-var rollDB = [];
+var rolDB = [];
 
 //checks to make sure user input values make sense.
 //auto corrects in certain cases.
-function rollSanity() {
+function rollSanity(di) {
     //isInt borrowed from http://stackoverflow.com/questions/14636536
     function isInt(value) {
 	var x;
@@ -61,7 +63,7 @@ function rollSanity() {
 /*the physics engine (to be built: a different abstract function than builtin Math.random().
 It will access the device's accelerometer and add physics + chaos to generate the roll.
 it'll be totally sweet!*/
-function physics() {
+function physics(di) {
 
     var rolls = [];
 
@@ -80,25 +82,25 @@ function physics() {
     di.totl = totally;
 }
 
-//timeStamp() acts as a serial number for the roll in rollDB.
+//timeStamp() acts as a serial number for the roll in rolDB.
 function timeStamp() {
     var rollTime = new Date();
     return rollTime.getTime();
 }
 
-//passes roll results to rollDB.
-function rollDBizer() {
+//passes roll results to rolDB.
+function rolDBize(di, rolDB) {
     var rollEntry = [],
 
     rollEntry = [timeStamp(), di.nmbr, di.sids, di.rols, di.totl];
 
-    rollDB.push(rollEntry);
+    rolDB.push(rollEntry);
 }
 
 //Separate di.whtnizer, so that code is easy to delete.
 //make it so every lowest possible roll that's rolled displays "Wheaton!" 
     //instead of the number
-function whtnize() {
+function whtnize(di) {
     if (di.totl === di.nmbr) {
 	di.whtn = "Wheaton!";
     } else if (di.totl < (0.33 * (di.nmbr * di.sids))){
@@ -114,7 +116,7 @@ function whtnize() {
 	
 //returns a neat string that shows what you rolled, how each roll went, and the total.
 //This will probably be numberfied and separated out when the actual UI gets built
-function rollOut() {
+function rollOut(di) {
     if (di.nmbr === 1) {
 	return ("1 d" + di.sids + ": " + di.totl + " " + di.whtn);
     } else { 
@@ -127,14 +129,14 @@ function dice(dNum, dSid) {
     di.nmbr = dNum;
     di.sids = dSid;
 
-    rollSanity();
+    rollSanity(di);
     if (di.insn) { return di.insn;
     } else {
 
-	physics();
-	rollDBizer();
-	whtnize();
-	return rollOut();
+	physics(di);
+	rolDBize(di, rolDB);
+	whtnize(di);
+	return rollOut(di);
 
     }
 }
@@ -178,12 +180,12 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
     function theRoll(dNum, dSid) {
 	di.nmbr = dNum;
 	di.sids = dSid;
-	rollSanity()
+	rollSanity(di)
 	if (di.insn) { 
 	    return di.insn;
 	} else {
-	    physics();
-	    rollDBizer();
+	    physics(di);
+	    rolDBize(di, rolDB);
    	    allDice.push(dNum + " d" + dSid);
 	    for (var i = 0; i < di.rols.length; i++) {
 		allRolls.push(di.rols[i]);
@@ -213,76 +215,69 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 }
 
 //Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls.
-function rollAdvantage() {
-    di.nmbr = 2;
-    di.sids = 20;
-    physics();
+function rollHigh(dNum, dSid) {
+    di.nmbr = dNum;
+    di.sids = dSid;
+    physics(di);
     di.nmbr = 1;
-    di.totl = Math.max(di.rols[0], di.rols[1]);
-    whtnize();
-    di.nmbr = "A";
-    rollDBizer();
+    di.totl = Math.max.apply(null, di.rols);
+    whtnize(di);
+    di.nmbr = 'H';
+    rolDBize(di, rolDB);
     return (di.rols.join(" & ") + ". Result: " + di.totl + " " + di.whtn);
 }
 
-function rollDisadvantage() {
-    di.nmbr = 2;
-    disides = 20;
-    physics();
+function rollLow(dNum, dSid) {
+    di.nmbr = dNum;
+    di.sids = dSid;
+    physics(di);
     di.nmbr = 1;
-    di.totl = Math.min(di.rols[0], di.rols[1]);
-    whtnize();
-    di.nmbr = "D";
-    rollDBizer();
+    di.totl = Math.min.apply(null, di.rols);
+    whtnize(di);
+    di.nmbr = 'L';
+    rolDBize(di, rolDB);
     return (di.rols.join(" & ") + ". Result: " + di.totl + " " + di.whtn);
 }
 
-function rollPercent() {
+function rollDigit(dNum, dSid) {
     var rollTime = new Date();
-    di.nmbr = 2;
-    di.sids = 10;
-    physics();
+    di.nmbr = dNum;
+    di.sids = dSid;
+    physics(di);
     di.nmbr = 1;
     di.sids = 100;
     di.totl = ((di.rols[0] % 10) * 10) + (di.rols[1] % 10);
     if (di.totl === 0) di.totl = 100;
-    whtnize();
+    whtnize(di);
     di.nmbr = "%";
-    rollDBizer();
+    rolDBize(di, rolDB);
     return (di.rols.join(" & ") + " %Score: " + di.totl + " " + di.whtn); 
 }
 
-//Accesses the last most recent roll, check if it is a d20 roll,
-    //May need to access rollDB instead of di.totl when DB goes up. 
+//Accesses the last most recent roll,
+    //May need to access rolDB instead of di.totl when DB goes up. 
 //then add itself to that roll. 
-//Handles Advantage, & Disadvantage rolls as well.
-function rollInspiration() {
-    var lastRoll = 0;
-    if (di.sids === 20) {
-	lastRoll = di.totl;
-	di.nmbr = 1;
-	di.sids = 10;
-	physics();
-	rollDBizer();
+function rollExtra(dNum, dSid) {
+    var lastRoll = di.totl;
+	di.nmbr = dNum;
+	di.sids = dSid;
+	physics(di);
+	rolDBize(di, rolDB);
 	return ("+" + di.totl + " to " + lastRoll + ": " + (lastRoll + di.totl));
-    } else {
-	return ("You can only add an inspiration die to a d20 roll.");
-    }
 }
 
 //input for manual rolls (like if you're using real dice). changes public variables directly.
-function rollManual(dNum, dSid, rolls) {
+function rollManual(dNum, dSid, rollsArray) {
     di.nmbr = dNum;
     di.sids = dSid;
     //rolls needs to be an array.
-    di.rols = rolls;
-    di.totl = rolls.reduce(function(a ,b) { return a + b; });
-    rollDBizer();
-    whtnize();
-    return rollOut();
+    di.rols = rollsArray;
+    di.totl = rollsArray.reduce(function(a ,b) { return a + b; });
+    rolDBize(di, rolDB);
+    whtnize(di);
+    return rollOut(di);
 }
 
-//returns undefined...
 function roll(rollType, dNum, dSid, arg3, arg4, arg5, arg6, 
 			arg7, arg8, arg9, argA, argB, argC) {
     if (rollType === 'dice') {
@@ -290,34 +285,28 @@ function roll(rollType, dNum, dSid, arg3, arg4, arg5, arg6,
     } else if (rollType === 'mix') {
 	return rollMix(dNum, dSid, arg3, arg4, arg5, arg6, 
 		       arg7, arg8, arg9, argA, argB, argC);
-    } else if (rollType === 'advantage') {
-	return rollAdvantage();
-    } else if (rollType === 'disadvantage') {
-	return rollDisadvantage();
-    } else if (rollType === 'percent') {
-	return rollPercent();
-    } else if (rollType === 'inspiration') {
-	return rollInspiration();
-    } else if (rollType === 'maunual') {
+    } else if (rollType === 'high') {
+	return rollHigh(dNum, dSid);
+    } else if (rollType === 'low') {
+	return rollLow(dNum, dSid);
+    } else if (rollType === 'digit') {
+	return rollDigit(dNum, dSid);
+    } else if (rollType === 'extra') {
+	return rollExtra(dNum, dSid);
+    } else if (rollType === 'manual') {
 	return rollManual(dNum, dSid, arg3);
-    }
+    } else { return 'not a valid method of rolling' }
 }
 //manual testing.
-console.log(dice(20));
-console.log(roll(dice,1,20));
-console.log(rollInspiration());
-console.log(dice(2,12));
-console.log(rollInspiration());
-console.log(dice(10,6));
-console.log(rollAdvantage());
-console.log(rollInspiration());
-console.log(rollDisadvantage());
-console.log(rollInspiration());
-console.log(rollManual(10, 6, [4, 4, 4, 2, 5, 2, 3, 2, 1, 6]));
-console.log(rollManual(2, 12, [5, 2]));
-console.log(rollInspiration());
-console.log(rollManual(1, 20, [20]));
-console.log(rollInspiration());
-console.log(rollMix(2, 12, 3, 10));
-console.log(rollPercent());
-console.log(rollDB);
+console.log(roll('dice',20));
+console.log(roll('dice',1,20));
+console.log(roll('extra',1,10));
+console.log(roll('dice',10,6));
+console.log(roll('high',2,20));
+console.log(roll('low',2,20));
+console.log(roll('extra',1,10));
+console.log(roll('manual',1,20,[20]));
+console.log(roll('extra',1,10));
+console.log(roll('mix',2,12,3,10));
+console.log(roll('digit',2,10));
+console.log(rolDB);
