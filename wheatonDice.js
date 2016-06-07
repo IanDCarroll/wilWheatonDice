@@ -239,19 +239,34 @@ function rollLow(dNum, dSid) {
     return (di.rols.join(" & ") + ". Result: " + di.totl + " " + di.whtn);
 }
 
+//each dNum is a digit in a base dSid number.
+//or each dSid is a number raised to the power of dNum.
+//2,10 is 100 - 4,10 is 10000 - 4,2 is 16 - 2,8 is 64 etc.
 function rollDigit(dNum, dSid) {
     var rollTime = new Date();
     di.nmbr = dNum;
     di.sids = dSid;
     physics(di);
+
+    di.totl = 0;
+    di.rols.reverse();
+    for (i=0; i<di.rols.length; i++) {
+	if (i === di.rols.length) {
+	    di.totl += (di.rols[i] % di.sids);
+	} else {
+	    di.totl += (di.rols[i] % di.sids) * Math.pow(di.sids,i);
+	}
+    }
+    di.rols.reverse();
+    di.sids = Math.pow(di.sids,di.nmbr);
+    if (di.totl === 0) {di.totl = di.sids;}
+
     di.nmbr = 1;
-    di.sids = 100;
-    di.totl = ((di.rols[0] % 10) * 10) + (di.rols[1] % 10);
-    if (di.totl === 0) di.totl = 100;
     whtnize(di);
-    di.nmbr = "%";
+
+    di.nmbr = "D";
     rolDBize(di, rolDB);
-    return (di.rols.join(" & ") + " %Score: " + di.totl + " " + di.whtn); 
+    return rollOut(di); 
 }
 
 //Accesses the last most recent roll,
@@ -298,15 +313,20 @@ function roll(rollType, dNum, dSid, arg3, arg4, arg5, arg6,
     } else { return 'not a valid method of rolling' }
 }
 //manual testing.
-console.log(roll('dice',20));
+//console.log(roll('dice',20));
 console.log(roll('dice',1,20));
-console.log(roll('extra',1,10));
-console.log(roll('dice',10,6));
-console.log(roll('high',2,20));
-console.log(roll('low',2,20));
-console.log(roll('extra',1,10));
-console.log(roll('manual',1,20,[20]));
-console.log(roll('extra',1,10));
-console.log(roll('mix',2,12,3,10));
-console.log(roll('digit',2,10));
+//console.log(roll('extra',1,10));
+//console.log(roll('dice',10,6));
+//console.log(roll('high',2,20));
+//console.log(roll('low',2,20));
+//console.log(roll('extra',1,10));
+//console.log(roll('manual',1,20,[20]));
+//console.log(roll('extra',1,10));
+//console.log(roll('mix',2,12,3,10));
+//console.log(roll('digit',2,10));
+//console.log(roll('digit',4,10));
+//console.log(roll('digit',4,2));
+//console.log(roll('digit',2,8));
+//console.log(roll('digit',2,12));
+//console.log(roll('digit',2,16));
 console.log(rolDB);
