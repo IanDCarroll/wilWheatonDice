@@ -67,14 +67,12 @@ function physics(di) {
 
     var rolls = [];
 
-    //rolls each die separately then pushes to "rolls" array.
     for (var i = 0; i < di.nmbr; i++) {	
 	    rolls.push(Math.ceil( Math.random() * di.sids ));     
     }
 
     di.rols = rolls;
 
-    //folds the array into a neat total
     var totally = rolls.reduce(function(a ,b) {
 	return a + b;
     });
@@ -102,26 +100,23 @@ function rolDBize(di, rolDB) {
     //instead of the number
 function whtnize(di) {
     if (di.totl === di.nmbr) {
-	di.whtn = "Wheaton!";
+	di.whtn = 'Wheaton!';
     } else if (di.totl < (0.33 * (di.nmbr * di.sids))){
-	di.whtn = "lesser Wheaton.";
+	di.whtn = 'lesser Wheaton.';
     } else if (di.totl === (di.nmbr * di.sids)) {
-	di.whtn = "Percy!";
+	di.whtn = 'Percy!';
     } else if (di.totl > (0.66 * (di.nmbr * di.sids))) {
-	di.whtn = "lesser Percy.";
+	di.whtn = 'lesser Percy.';
     } else {
-	di.whtn = "";
+	di.whtn = '';
     }
 }
 	
 //returns a neat string that shows what you rolled, how each roll went, and the total.
 //This will probably be numberfied and separated out when the actual UI gets built
 function rollOut(di) {
-    if (di.nmbr === 1) {
-	return ("1 d" + di.sids + ": " + di.totl + " " + di.whtn);
-    } else { 
-	return (di.nmbr + " d" + di.sids + ": " + di.rols.join(", ") + 
-		" Total: " + di.totl + " " + di.whtn);}
+    return (di.nmbr + " d" + di.sids + ": " + di.rols.join(", ") + 
+	       " Total: " + di.totl + " " +  di.whtn);
 }
 
 //the main simple dice roll manager
@@ -224,7 +219,7 @@ function rollHigh(dNum, dSid) {
     whtnize(di);
     di.nmbr = 'H';
     rolDBize(di, rolDB);
-    return (di.rols.join(" & ") + ". Result: " + di.totl + " " + di.whtn);
+    return rollOut(di);
 }
 
 function rollLow(dNum, dSid) {
@@ -236,7 +231,7 @@ function rollLow(dNum, dSid) {
     whtnize(di);
     di.nmbr = 'L';
     rolDBize(di, rolDB);
-    return (di.rols.join(" & ") + ". Result: " + di.totl + " " + di.whtn);
+    return rollOut(di);
 }
 
 //each dNum is a digit in a base dSid number.
@@ -277,8 +272,11 @@ function rollExtra(dNum, dSid) {
 	di.nmbr = dNum;
 	di.sids = dSid;
 	physics(di);
+	whtnize(di);
+	di.totl += lastRoll;
+	di.nmbr = 'X';
 	rolDBize(di, rolDB);
-	return ("+" + di.totl + " to " + lastRoll + ": " + (lastRoll + di.totl));
+	return rollOut(di);
 }
 
 //input for manual rolls (like if you're using real dice). changes public variables directly.
@@ -317,9 +315,9 @@ function roll(rollType, dNum, dSid, arg3, arg4, arg5, arg6,
 console.log(roll('dice',1,20));
 //console.log(roll('extra',1,10));
 //console.log(roll('dice',10,6));
-//console.log(roll('high',2,20));
-//console.log(roll('low',2,20));
-//console.log(roll('extra',1,10));
+console.log(roll('high',2,20));
+console.log(roll('low',2,20));
+console.log(roll('extra',1,10));
 //console.log(roll('manual',1,20,[20]));
 //console.log(roll('extra',1,10));
 //console.log(roll('mix',2,12,3,10));
