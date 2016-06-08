@@ -32,7 +32,7 @@ def whtnize(di):
     elif di['totl'] == di['nmbr'] * di['sids']:
 	di['whtn'] = ' Percy!'
     elif di['totl'] < (di['nmbr'] * di['sids'])/3:
-	di['whtn'] = ' lesser wheaton.'
+	di['whtn'] = ' lesser Wheaton.'
     elif di['totl'] > ((di['nmbr'] * di['sids'])/3)*2:
 	di['whtn'] = ' lesser Percy.'
     else: 
@@ -109,7 +109,16 @@ def rollDigit(dNum,dSid,di,rolDB):
 
     return rollOut(di)
 
-#def rollExtra():
+def rollExtra(dNum,dSid,di,rolDB):
+    lastRoll = di['totl']
+    di['nmbr'] = dNum
+    di['sids'] = dSid
+    physics(di)
+    whtnize(di)
+    di['totl'] += lastRoll
+    di['nmbr'] = 'X'
+    rolDBize(di,rolDB)
+    return rollOut(di)
 
 #def rollManual():
 
@@ -120,6 +129,7 @@ def main():
     print roll(1,20,di,rolDB)
     print rollHigher(2,20,di,rolDB)
     print rollLower(2,20,di,rolDB)
+    print rollExtra(1,10,di,rolDB)
     print rollDigit(2,10,di,rolDB)
     #print rollDigit(4,10,di,rolDB)
     #print rollDigit(5,2,di,rolDB)
@@ -127,6 +137,7 @@ def main():
     #print rollDigit(2,8,di,rolDB)
     #print rollDigit(2,12,di,rolDB)
     #print rollDigit(2,20,di,rolDB)
+    print rolDB
 
 if __name__ == '__main__':
     main()
