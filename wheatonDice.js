@@ -1,9 +1,15 @@
-/* di.whtnDice is an opensource project to study the legendary dice curse of Wil Wheaton
- * and get to the bottom of bad juju. At the moment, it's just a dice roller, but later 
- * functions will include a rolls database that can track any sinking feeling that the kind of 
- * cheetos you're eating is influencing your rolls. Also v.1.0 is aiming at 5th edition D&D rules
- * usage. Later versions will be more system agnostic. This is intended for mobile release, but 
- * for now, this is just the engine. Minus the actual engine. Broad strokes to get the system 
+/* di.whtnDice is an opensource project to study the legendary dice curse 
+ * of Wil Wheaton
+ * and get to the bottom of bad juju. At the moment, 
+ * it's just a dice roller, but later 
+ * functions will include a rolls database that can track 
+ * any sinking feeling that the kind of 
+ * cheetos you're eating is influencing your rolls. 
+ * Also v.1.0 is aiming at 5th edition D&D rules
+ * usage. Later versions will be more system agnostic. 
+ * This is intended for mobile release, but 
+ * for now, this is just the engine. Minus the actual engine. 
+ * Broad strokes to get the system 
  * working. Much to be built! -Ian
  */
 
@@ -17,8 +23,10 @@ var di = {  nmbr:undefined,
 	    //todo: getters and setters	 
 	};
 
-//saved rolls go here so they can be accessed and analyzed (unitl a proper DB is made)
-//currnet version forgets after the battery of console.log()s are made. Need a proper DB, 
+//saved rolls go here so they can be accessed and analyzed 
+//(unitl a proper DB is made)
+//currnet version forgets after the battery of console.log()s are made. 
+//Need a proper DB, 
 //but this is proof of concept. todo: db that can store previous rolls.
 var rolDB = [];
 
@@ -60,8 +68,10 @@ function rollSanity(di) {
     }
 }
 
-/*the physics engine (to be built: a different abstract function than builtin Math.random().
-It will access the device's accelerometer and add physics + chaos to generate the roll.
+/*the physics engine 
+(to be built: a different abstract function than builtin Math.random().
+It will access the device's accelerometer and add physics + chaos 
+to generate the roll.
 it'll be totally sweet!*/
 function physics(di) {
 
@@ -95,9 +105,10 @@ function rolDBize(di, rolDB) {
     rolDB.push(rollEntry);
 }
 
-//Separate di.whtnizer, so that code is easy to delete.
+
 //make it so every lowest possible roll that's rolled displays "Wheaton!" 
     //instead of the number
+//Not used unless in CLI
 function whtnize(di) {
     if (di.totl === di.nmbr) {
 	di.whtn = 'Wheaton!';
@@ -112,8 +123,8 @@ function whtnize(di) {
     }
 }
 	
-//returns a neat string that shows what you rolled, how each roll went, and the total.
-//This will probably be numberfied and separated out when the actual UI gets built
+//returns a neat string that shows what you rolled, and the total.
+//Not used unless in CLI
 function rollOut(di) {
     return (di.nmbr + " d" + di.sids + ": " + di.rols.join(", ") + 
 	       " Total: " + di.totl + " " +  di.whtn);
@@ -131,8 +142,8 @@ function dice(dNum, dSid) {
 	physics(di);
 	rolDBize(di, rolDB);
 	whtnize(di);
-	return rollOut(di);
-
+	//return rollOut(di); //for CLI
+	return di.totl;
     }
 }
 
@@ -145,10 +156,10 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
     var allRolls = [],
 	allDice = [],
 	allTotal = 0,
-	allWhton = "",
-	displayString;
+	allWhton = "", //for CLI
+	displayString; //for CLI
 
-    function countWils() {
+    function countWils() { //for CLI
 	var lowest = dNum1 + dNum2 + dNum3 + dNum4 + dNum5 + dNum6,
 	    highest = dNum1 * dSid1;
 
@@ -200,13 +211,14 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	return a + b;
     });
 
-    countWils();
+    countWils(); //For CLI
 
     displayString = (allDice.join(", ") + ": " + allRolls.join(", ") + 
-		     " Total: " + allTotal + " " + allWhton);
+		     " Total: " + allTotal + " " + allWhton); //for CLI
 
 
-    return displayString;
+    //return displayString; //for CLI, a lot of unused code in rollMix
+    return allTotal;
 }
 
 //Special kinds of D&D rolls, Advantage, Disadvantage, Percent, Inspiration and mixed rolls.
@@ -219,7 +231,8 @@ function rollHigh(dNum, dSid) {
     whtnize(di);
     di.nmbr = 'H';
     rolDBize(di, rolDB);
-    return rollOut(di);
+    //return rollOut(di); //for CLI
+    return di.totl;
 }
 
 function rollLow(dNum, dSid) {
@@ -231,7 +244,8 @@ function rollLow(dNum, dSid) {
     whtnize(di);
     di.nmbr = 'L';
     rolDBize(di, rolDB);
-    return rollOut(di);
+    //return rollOut(di); //for CLI
+    return di.totl;
 }
 
 //each dNum is a digit in a base dSid number.
@@ -261,7 +275,8 @@ function rollDigit(dNum, dSid) {
 
     di.nmbr = "D";
     rolDBize(di, rolDB);
-    return rollOut(di); 
+    //return rollOut(di); //for CLI
+    return di.totl;
 }
 
 //Accesses the last most recent roll,
@@ -276,7 +291,8 @@ function rollExtra(dNum, dSid) {
 	di.totl += lastRoll;
 	di.nmbr = 'X';
 	rolDBize(di, rolDB);
-	return rollOut(di);
+	//return rollOut(di); //for CLI
+	return di.totl;
 }
 
 //input for manual rolls (like if you're using real dice). changes public variables directly.
@@ -288,39 +304,54 @@ function rollManual(dNum, dSid, rollsArray) {
     di.totl = rollsArray.reduce(function(a ,b) { return a + b; });
     rolDBize(di, rolDB);
     whtnize(di);
-    return rollOut(di);
+    //return rollOut(di); //for CLI
+    return di.totl
 }
 
-function roll(rollType, dNum, dSid, arg3, arg4, arg5, arg6, 
-			arg7, arg8, arg9, argA, argB, argC) {
-    if (rollType === 'dice') {
-	return dice(dNum, dSid);	
-    } else if (rollType === 'mix') {
-	return rollMix(dNum, dSid, arg3, arg4, arg5, arg6, 
+function roll( arg0, arg1, arg2, arg3, arg4, arg5, arg6, 
+	       arg7, arg8, arg9, argA, argB, argC) {
+    if (arg0 === 'dice') {
+	return dice(arg1, arg2);	
+    } else if (arg0 === 'mix') {
+	return rollMix(arg1, arg2, arg3, arg4, arg5, arg6, 
 		       arg7, arg8, arg9, argA, argB, argC);
-    } else if (rollType === 'high') {
-	return rollHigh(dNum, dSid);
-    } else if (rollType === 'low') {
-	return rollLow(dNum, dSid);
-    } else if (rollType === 'digit') {
-	return rollDigit(dNum, dSid);
-    } else if (rollType === 'extra') {
-	return rollExtra(dNum, dSid);
-    } else if (rollType === 'manual') {
-	return rollManual(dNum, dSid, arg3);
-    } else { return 'not a valid method of rolling' }
+    } else if (arg0 === 'high') {
+	return rollHigh(arg1, arg2);
+    } else if (arg0 === 'low') {
+	return rollLow(arg1, arg2);
+    } else if (arg0 === 'digit') {
+	return rollDigit(arg1, arg2);
+    } else if (arg0 === 'extra') {
+	return rollExtra(arg1, arg2);
+    } else if (arg0 === 'manual') {
+	return rollManual(arg1, arg2, arg3);
+    } else { 
+	return dice(arg0, arg1); 
+    }
 }
-//manual testing.
+
+//***manual testing***
+	//dice()
 //console.log(roll('dice',20));
 console.log(roll('dice',1,20));
+//console.log(roll(1,20));
+//console.log(roll(20));
+	//Insane rolls
+//console.log(roll('somethingelse',20));
+//console.log(roll(2,1));
+//console.log(roll(0,20));
+//console.log(roll(20,0));
+//console.log(roll());
+	//Assorted rolls
 //console.log(roll('extra',1,10));
 //console.log(roll('dice',10,6));
-console.log(roll('high',2,20));
-console.log(roll('low',2,20));
-console.log(roll('extra',1,10));
+//console.log(roll('high',2,20));
+//console.log(roll('low',2,20));
+//console.log(roll('extra',1,10));
 //console.log(roll('manual',1,20,[20]));
 //console.log(roll('extra',1,10));
 //console.log(roll('mix',2,12,3,10));
+	//digit-based rolls
 //console.log(roll('digit',2,10));
 //console.log(roll('digit',4,10));
 //console.log(roll('digit',4,2));
