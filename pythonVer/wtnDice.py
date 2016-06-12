@@ -127,7 +127,17 @@ def rollExtra(dNum,dSid,di,rolDB):
     #return rollOut(di) #For CLI
     return di['totl']    
 
-#def rollManual():
+#Do I need dNum arg if i'm just going to change it to 'M'?
+def rollManual(dNum,dSid,rolList,di,rolDB):
+    di['nmbr'] = dNum
+    di['sids'] = dSid
+    di['rols'] = rolList
+    di['totl'] = sum(rolList)
+    rolDBize(di,rolDB)
+    whtnize(di)
+    #return rollOut(di) #For CLI
+    return di['totl']
+
 
 def main():
     di = {'time':'','nmbr':0,'sids':0,'rols':[],'totl':0,'whtn':''}
@@ -145,6 +155,8 @@ def main():
     #print rollDigit(2,8,di,rolDB)
     #print rollDigit(2,12,di,rolDB)
     #print rollDigit(2,20,di,rolDB)
+    print rollManual(1,20,[20],di,rolDB)
+    print rollManual(3,12,[12,12,12],di,rolDB)
     print rolDB
 
 if __name__ == '__main__':
