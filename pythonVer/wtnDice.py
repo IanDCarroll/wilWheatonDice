@@ -57,14 +57,16 @@ def roll(dNum,dSid,di,rolDB):
 
 #def rollMix():
 
-def rollHigher(dNum,dSid,di,rolDB):
+def rollHigh(dNum,dSid,take,di,rolDB):
     di['nmbr'] = dNum
     di['sids'] = dSid
     physics(di)
 
     di['nmbr'] = 1
+    di['totl'] = 0
     sort = sorted(di['rols'], key=None, reverse=True)
-    di['totl'] = sort[0]
+    for i in range(0,take):
+	di['totl'] += sort[i]
     whtnize(di)
 
     di['nmbr'] = 'H'
@@ -73,14 +75,16 @@ def rollHigher(dNum,dSid,di,rolDB):
     #return rollOut(di) #For CLI
     return di['totl']
 
-def rollLower(dNum,dSid,di,rolDB):
+def rollLow(dNum,dSid,take,di,rolDB):
     di['nmbr'] = dNum
     di['sids'] = dSid
     physics(di)
 
     di['nmbr'] = 1
+    di['totl'] = 0
     sort = sorted(di['rols'])
-    di['totl'] = sort[0]
+    for i in range(0,take):
+	di['totl'] += sort[i]
     whtnize(di)
 
     di['nmbr'] = 'L'
@@ -144,19 +148,21 @@ def main():
     rolDB = []
 
     #Is there some way to limit the args to two? 4 is weird.
-    print roll(1,20,di,rolDB)
-    print rollHigher(2,20,di,rolDB)
-    print rollLower(2,20,di,rolDB)
-    print rollExtra(1,10,di,rolDB)
-    print rollDigit(2,10,di,rolDB)
+    #print roll(1,20,di,rolDB)
+    print rollHigh(2,20,1,di,rolDB)
+    print rollHigh(4,6,3,di,rolDB)
+    print rollLow(2,20,1,di,rolDB)
+    print rollLow(4,6,3,di,rolDB)
+    #print rollExtra(1,10,di,rolDB)
+    #print rollDigit(2,10,di,rolDB)
     #print rollDigit(4,10,di,rolDB)
     #print rollDigit(5,2,di,rolDB)
     #print rollDigit(2,4,di,rolDB)
     #print rollDigit(2,8,di,rolDB)
     #print rollDigit(2,12,di,rolDB)
     #print rollDigit(2,20,di,rolDB)
-    print rollManual(1,20,[20],di,rolDB)
-    print rollManual(3,12,[12,12,12],di,rolDB)
+    #print rollManual(1,20,[20],di,rolDB)
+    #print rollManual(3,12,[12,12,12],di,rolDB)
     print rolDB
 
 if __name__ == '__main__':
