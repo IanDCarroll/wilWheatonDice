@@ -104,7 +104,7 @@ function rolDBize(di, rolDB) {
 
     rolDB.push(rollEntry);
 }
-
+/* Phasing out CLI display
 
 //make it so every lowest possible roll that's rolled displays "Wheaton!" 
     //instead of the number
@@ -129,6 +129,7 @@ function rollOut(di) {
     return (di.nmbr + " d" + di.sids + ": " + di.rols.join(", ") + 
 	       " Total: " + di.totl + " " +  di.whtn);
 }
+*/
 
 //the main simple dice roll manager
 function dice(dNum, dSid) {
@@ -140,8 +141,9 @@ function dice(dNum, dSid) {
     } else {
 
 	physics(di);
+	di.nmbr = 'R';
 	rolDBize(di, rolDB);
-	whtnize(di);
+	//whtnize(di);
 	//return rollOut(di); //for CLI
 	return di.totl;
     }
@@ -151,14 +153,14 @@ function dice(dNum, dSid) {
 d4, d6, d8, d10, d12, and d20. It would be quite unusual for all these 
 types of dice to be rolled at the same time, but just in case, 
 rollMix will be able to handle up to 6 different kinds of dice rolls. */
-function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3, 
-		 dNum4, dSid4, dNum5, dSid5, dNum6, dSid6) {
+function rollTgethr(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3, 
+		    dNum4, dSid4, dNum5, dSid5, dNum6, dSid6) {
     var allRolls = [],
-	allDice = [],
-	allTotal = 0,
-	allWhton = "", //for CLI
-	displayString; //for CLI
-
+	//allDice = [],
+	allTotal = 0;
+    //var allWhton = "", //for CLI
+	//displayString; //for CLI
+/*
     function countWils() { //for CLI
 	var lowest = dNum1 + dNum2 + dNum3 + dNum4 + dNum5 + dNum6,
 	    highest = dNum1 * dSid1;
@@ -182,7 +184,7 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	    allWhton = "Lesser Percy."; 
 	}
     }
-
+*/
     function theRoll(dNum, dSid) {
 	di.nmbr = dNum;
 	di.sids = dSid;
@@ -191,8 +193,9 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	    return di.insn;
 	} else {
 	    physics(di);
+	    di.nmbr = 'T';
 	    rolDBize(di, rolDB);
-   	    allDice.push(dNum + " d" + dSid);
+   	    //allDice.push(dNum + " d" + dSid);
 	    for (var i = 0; i < di.rols.length; i++) {
 		allRolls.push(di.rols[i]);
 	    }
@@ -211,10 +214,10 @@ function rollMix(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	return a + b;
     });
 
-    countWils(); //For CLI
+    //countWils(); //For CLI
 
-    displayString = (allDice.join(", ") + ": " + allRolls.join(", ") + 
-		     " Total: " + allTotal + " " + allWhton); //for CLI
+    //displayString = (allDice.join(", ") + ": " + allRolls.join(", ") + 
+    //		     " Total: " + allTotal + " " + allWhton); //for CLI
 
 
     //return displayString; //for CLI, a lot of unused code in rollMix
@@ -228,7 +231,7 @@ function rollHigh(dNum, dSid) {
     physics(di);
     di.nmbr = 1;
     di.totl = Math.max.apply(null, di.rols);
-    whtnize(di);
+    //whtnize(di);
     di.nmbr = 'H';
     rolDBize(di, rolDB);
     //return rollOut(di); //for CLI
@@ -241,7 +244,7 @@ function rollLow(dNum, dSid) {
     physics(di);
     di.nmbr = 1;
     di.totl = Math.min.apply(null, di.rols);
-    whtnize(di);
+    //whtnize(di);
     di.nmbr = 'L';
     rolDBize(di, rolDB);
     //return rollOut(di); //for CLI
@@ -271,7 +274,7 @@ function rollDigit(dNum, dSid) {
     if (di.totl === 0) {di.totl = di.sids;}
 
     di.nmbr = 1;
-    whtnize(di);
+    //whtnize(di);
 
     di.nmbr = "D";
     rolDBize(di, rolDB);
@@ -287,7 +290,7 @@ function rollExtra(dNum, dSid) {
 	di.nmbr = dNum;
 	di.sids = dSid;
 	physics(di);
-	whtnize(di);
+	//whtnize(di);
 	di.totl += lastRoll;
 	di.nmbr = 'X';
 	rolDBize(di, rolDB);
@@ -295,15 +298,17 @@ function rollExtra(dNum, dSid) {
 	return di.totl;
 }
 
-//input for manual rolls (like if you're using real dice). changes public variables directly.
+//input for manual rolls (like if you're using real dice). 
+//changes public variables directly.
 function rollManual(dNum, dSid, rollsArray) {
-    di.nmbr = dNum;
+    //dNum is an unused arg!
+    di.nmbr = 'M';
     di.sids = dSid;
     //rolls needs to be an array.
     di.rols = rollsArray;
     di.totl = rollsArray.reduce(function(a ,b) { return a + b; });
     rolDBize(di, rolDB);
-    whtnize(di);
+    //whtnize(di);
     //return rollOut(di); //for CLI
     return di.totl
 }
@@ -312,9 +317,9 @@ function roll( arg0, arg1, arg2, arg3, arg4, arg5, arg6,
 	       arg7, arg8, arg9, argA, argB, argC) {
     if (arg0 === 'dice') {
 	return dice(arg1, arg2);	
-    } else if (arg0 === 'mix') {
-	return rollMix(arg1, arg2, arg3, arg4, arg5, arg6, 
-		       arg7, arg8, arg9, argA, argB, argC);
+    } else if (arg0 === 'together') {
+	return rollTgethr(arg1, arg2, arg3, arg4, arg5, arg6, 
+		          arg7, arg8, arg9, argA, argB, argC);
     } else if (arg0 === 'high') {
 	return rollHigh(arg1, arg2);
     } else if (arg0 === 'low') {
@@ -343,16 +348,16 @@ console.log(roll('dice',1,20));
 //console.log(roll(20,0));
 //console.log(roll());
 	//Assorted rolls
-//console.log(roll('extra',1,10));
+console.log(roll('extra',1,10));
 //console.log(roll('dice',10,6));
-//console.log(roll('high',2,20));
-//console.log(roll('low',2,20));
+console.log(roll('high',2,20));
+console.log(roll('low',2,20));
+console.log(roll('extra',1,10));
+console.log(roll('manual',1,20,[20]));
 //console.log(roll('extra',1,10));
-//console.log(roll('manual',1,20,[20]));
-//console.log(roll('extra',1,10));
-//console.log(roll('mix',2,12,3,10));
+console.log(roll('together',2,12,3,10));
 	//digit-based rolls
-//console.log(roll('digit',2,10));
+console.log(roll('digit',2,10));
 //console.log(roll('digit',4,10));
 //console.log(roll('digit',4,2));
 //console.log(roll('digit',2,8));
