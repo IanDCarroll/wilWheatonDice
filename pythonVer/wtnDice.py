@@ -1,6 +1,5 @@
 #python port of wtnDice:
 
-#import neccesary libraries
 from datetime import datetime
 #placeholder for physics module
 import numpy as np
@@ -26,6 +25,7 @@ def rolDBize(di, rolDB):
     rolNtry = [di['time'],di['nmbr'],di['sids'],di['rols'],di['totl']]
     rolDB.append(rolNtry)
 
+'''
 #Not used except in CLI
 def whtnize(di):
     if di['totl'] == di['nmbr']:
@@ -43,6 +43,7 @@ def whtnize(di):
 def rollOut(di):
     return "%s d%s: %s Total: %s%s" % (di['nmbr'], di['sids'],
 	di['rols'], di['totl'], di['whtn'])
+'''
 
 #calling functions
 def roll(dNum,dSid,di,rolDB): 
@@ -51,7 +52,7 @@ def roll(dNum,dSid,di,rolDB):
 
     physics(di)
     rolDBize(di, rolDB)
-    whtnize(di)
+    #whtnize(di)
     #return rollOut(di) #For CLI
     return di['totl']
 
@@ -67,7 +68,7 @@ def rollHigh(dNum,dSid,take,di,rolDB):
     sort = sorted(di['rols'], key=None, reverse=True)
     for i in range(0,take):
 	di['totl'] += sort[i]
-    whtnize(di)
+    #whtnize(di)
 
     di['nmbr'] = 'H'
     rolDBize(di, rolDB)
@@ -85,7 +86,7 @@ def rollLow(dNum,dSid,take,di,rolDB):
     sort = sorted(di['rols'])
     for i in range(0,take):
 	di['totl'] += sort[i]
-    whtnize(di)
+    #whtnize(di)
 
     di['nmbr'] = 'L'
     rolDBize(di, rolDB)
@@ -113,7 +114,7 @@ def rollDigit(dNum,dSid,di,rolDB):
 
     di['nmbr'] = 1
     di['rols'].reverse()
-    whtnize(di)
+    #whtnize(di)
     di['nmbr'] = 'D'
 
     #return rollOut(di) #For CLI
@@ -124,7 +125,7 @@ def rollExtra(dNum,dSid,di,rolDB):
     di['nmbr'] = dNum
     di['sids'] = dSid
     physics(di)
-    whtnize(di)
+    #whtnize(di)
     di['totl'] += lastRoll
     di['nmbr'] = 'X'
     rolDBize(di,rolDB)
@@ -138,7 +139,7 @@ def rollManual(dNum,dSid,rolList,di,rolDB):
     di['rols'] = rolList
     di['totl'] = sum(rolList)
     rolDBize(di,rolDB)
-    whtnize(di)
+    #whtnize(di)
     #return rollOut(di) #For CLI
     return di['totl']
 
@@ -148,20 +149,20 @@ def main():
     rolDB = []
 
     #Is there some way to limit the args to two? 4 is weird.
-    #print roll(1,20,di,rolDB)
+    print roll(1,20,di,rolDB)
     print rollHigh(2,20,1,di,rolDB)
-    print rollHigh(4,6,3,di,rolDB)
+    #print rollHigh(4,6,3,di,rolDB)
     print rollLow(2,20,1,di,rolDB)
-    print rollLow(4,6,3,di,rolDB)
-    #print rollExtra(1,10,di,rolDB)
-    #print rollDigit(2,10,di,rolDB)
+    #print rollLow(4,6,3,di,rolDB)
+    print rollExtra(1,10,di,rolDB)
+    print rollDigit(2,10,di,rolDB)
     #print rollDigit(4,10,di,rolDB)
     #print rollDigit(5,2,di,rolDB)
     #print rollDigit(2,4,di,rolDB)
     #print rollDigit(2,8,di,rolDB)
     #print rollDigit(2,12,di,rolDB)
     #print rollDigit(2,20,di,rolDB)
-    #print rollManual(1,20,[20],di,rolDB)
+    print rollManual(1,20,[20],di,rolDB)
     #print rollManual(3,12,[12,12,12],di,rolDB)
     print rolDB
 
