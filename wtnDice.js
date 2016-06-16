@@ -20,7 +20,7 @@ var di = {  nmbr:undefined,
     	    totl:undefined,
     	    whtn:undefined,
     	    insn:'Sanity Error!'
-	    //todo: getters and setters	 
+	    //todo: turn this into an object with getters and setters	 
 	};
 
 //saved rolls go here so they can be accessed and analyzed 
@@ -104,32 +104,6 @@ function rolDBize(di, rolDB) {
 
     rolDB.push(rollEntry);
 }
-/* Phasing out CLI display
-
-//make it so every lowest possible roll that's rolled displays "Wheaton!" 
-    //instead of the number
-//Not used unless in CLI
-function whtnize(di) {
-    if (di.totl === di.nmbr) {
-	di.whtn = 'Wheaton!';
-    } else if (di.totl < (0.33 * (di.nmbr * di.sids))){
-	di.whtn = 'lesser Wheaton.';
-    } else if (di.totl === (di.nmbr * di.sids)) {
-	di.whtn = 'Percy!';
-    } else if (di.totl > (0.66 * (di.nmbr * di.sids))) {
-	di.whtn = 'lesser Percy.';
-    } else {
-	di.whtn = '';
-    }
-}
-	
-//returns a neat string that shows what you rolled, and the total.
-//Not used unless in CLI
-function rollOut(di) {
-    return (di.nmbr + " d" + di.sids + ": " + di.rols.join(", ") + 
-	       " Total: " + di.totl + " " +  di.whtn);
-}
-*/
 
 //the main simple dice roll manager
 function dice(dNum, dSid) {
@@ -139,12 +113,9 @@ function dice(dNum, dSid) {
     rollSanity(di);
     if (di.insn) { return di.insn;
     } else {
-
 	physics(di);
 	di.nmbr = 'R';
 	rolDBize(di, rolDB);
-	//whtnize(di);
-	//return rollOut(di); //for CLI
 	return di.totl;
     }
 }
@@ -152,39 +123,12 @@ function dice(dNum, dSid) {
 /*Mixed dice rolls. There are 6 Standard dice in D&D.
 d4, d6, d8, d10, d12, and d20. It would be quite unusual for all these 
 types of dice to be rolled at the same time, but just in case, 
-rollMix will be able to handle up to 6 different kinds of dice rolls. */
+rollTgethr will be able to handle up to 6 different kinds of dice rolls. */
 function rollTgethr(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3, 
 		    dNum4, dSid4, dNum5, dSid5, dNum6, dSid6) {
     var allRolls = [],
-	//allDice = [],
 	allTotal = 0;
-    //var allWhton = "", //for CLI
-	//displayString; //for CLI
-/*
-    function countWils() { //for CLI
-	var lowest = dNum1 + dNum2 + dNum3 + dNum4 + dNum5 + dNum6,
-	    highest = dNum1 * dSid1;
 
-	if (dNum2 && dSid2) { highest += dNum2 * dSid2 }
-	if (dNum3 && dSid3) { highest += dNum3 * dSid3 }
-	if (dNum4 && dSid4) { highest += dNum4 * dSid4 }
-	if (dNum5 && dSid5) { highest += dNum5 * dSid5 }
-	if (dNum6 && dSid6) { highest += dNum6 * dSid6 }
-
-	if (allTotal === lowest) {
-	    allWhton = "Wheaton!";
-	}
-	else if (allTotal < 0.33 * highest) {
-	    allWhton = "Lesser Wheaton.";
-	}
-	else if (allTotal === highest) {
-	    allWhton = "Percy!"; 
-	}
-	else if (allTotal > 0.66 * highest) {
-	    allWhton = "Lesser Percy."; 
-	}
-    }
-*/
     function theRoll(dNum, dSid) {
 	di.nmbr = dNum;
 	di.sids = dSid;
@@ -195,7 +139,6 @@ function rollTgethr(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	    physics(di);
 	    di.nmbr = 'T';
 	    rolDBize(di, rolDB);
-   	    //allDice.push(dNum + " d" + dSid);
 	    for (var i = 0; i < di.rols.length; i++) {
 		allRolls.push(di.rols[i]);
 	    }
@@ -214,13 +157,6 @@ function rollTgethr(dNum1, dSid1, dNum2, dSid2, dNum3, dSid3,
 	return a + b;
     });
 
-    //countWils(); //For CLI
-
-    //displayString = (allDice.join(", ") + ": " + allRolls.join(", ") + 
-    //		     " Total: " + allTotal + " " + allWhton); //for CLI
-
-
-    //return displayString; //for CLI, a lot of unused code in rollMix
     return allTotal;
 }
 
@@ -231,10 +167,8 @@ function rollHigh(dNum, dSid) {
     physics(di);
     di.nmbr = 1;
     di.totl = Math.max.apply(null, di.rols);
-    //whtnize(di);
     di.nmbr = 'H';
     rolDBize(di, rolDB);
-    //return rollOut(di); //for CLI
     return di.totl;
 }
 
@@ -244,10 +178,8 @@ function rollLow(dNum, dSid) {
     physics(di);
     di.nmbr = 1;
     di.totl = Math.min.apply(null, di.rols);
-    //whtnize(di);
     di.nmbr = 'L';
     rolDBize(di, rolDB);
-    //return rollOut(di); //for CLI
     return di.totl;
 }
 
@@ -273,12 +205,8 @@ function rollDigit(dNum, dSid) {
     di.sids = Math.pow(di.sids,di.nmbr);
     if (di.totl === 0) {di.totl = di.sids;}
 
-    di.nmbr = 1;
-    //whtnize(di);
-
     di.nmbr = "D";
     rolDBize(di, rolDB);
-    //return rollOut(di); //for CLI
     return di.totl;
 }
 
@@ -290,17 +218,15 @@ function rollExtra(dNum, dSid) {
 	di.nmbr = dNum;
 	di.sids = dSid;
 	physics(di);
-	//whtnize(di);
 	di.totl += lastRoll;
 	di.nmbr = 'X';
 	rolDBize(di, rolDB);
-	//return rollOut(di); //for CLI
 	return di.totl;
 }
 
 //input for manual rolls (like if you're using real dice). 
 //changes public variables directly.
-function rollManual(dNum, dSid, rollsArray) {
+function rollManual(dSid, rollsArray) {
     //dNum is an unused arg!
     di.nmbr = 'M';
     di.sids = dSid;
@@ -308,8 +234,6 @@ function rollManual(dNum, dSid, rollsArray) {
     di.rols = rollsArray;
     di.totl = rollsArray.reduce(function(a ,b) { return a + b; });
     rolDBize(di, rolDB);
-    //whtnize(di);
-    //return rollOut(di); //for CLI
     return di.totl
 }
 
@@ -329,7 +253,7 @@ function roll( arg0, arg1, arg2, arg3, arg4, arg5, arg6,
     } else if (arg0 === 'extra') {
 	return rollExtra(arg1, arg2);
     } else if (arg0 === 'manual') {
-	return rollManual(arg1, arg2, arg3);
+	return rollManual(arg1, arg2);
     } else { 
 	return dice(arg0, arg1); 
     }
@@ -353,7 +277,7 @@ console.log(roll('extra',1,10));
 console.log(roll('high',2,20));
 console.log(roll('low',2,20));
 console.log(roll('extra',1,10));
-console.log(roll('manual',1,20,[20]));
+console.log(roll('manual',20,[20]));
 //console.log(roll('extra',1,10));
 console.log(roll('together',2,12,3,10));
 	//digit-based rolls
