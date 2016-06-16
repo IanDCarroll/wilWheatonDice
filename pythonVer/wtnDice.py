@@ -34,7 +34,8 @@ def roll(dNum,dSid,di,rolDB):
     rolDBize(di, rolDB)
     return di['totl']
 
-#def rollMix():
+#def rollMix(): Can't be ported yet.
+#Pyhton doesn't support varargs as easily as JavaScript.
 
 def rollHigh(dNum,dSid,take,di,rolDB):
     di['nmbr'] = dNum
