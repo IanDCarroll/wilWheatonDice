@@ -25,26 +25,6 @@ def rolDBize(di, rolDB):
     rolNtry = [di['time'],di['nmbr'],di['sids'],di['rols'],di['totl']]
     rolDB.append(rolNtry)
 
-'''
-#Not used except in CLI
-def whtnize(di):
-    if di['totl'] == di['nmbr']:
-	di['whtn'] = ' Wheaton!'
-    elif di['totl'] == di['nmbr'] * di['sids']:
-	di['whtn'] = ' Percy!'
-    elif di['totl'] < (di['nmbr'] * di['sids'])/3:
-	di['whtn'] = ' lesser Wheaton.'
-    elif di['totl'] > ((di['nmbr'] * di['sids'])/3)*2:
-	di['whtn'] = ' lesser Percy.'
-    else: 
-	di['whtn'] = ''
-
-#Not used except in CLI
-def rollOut(di):
-    return "%s d%s: %s Total: %s%s" % (di['nmbr'], di['sids'],
-	di['rols'], di['totl'], di['whtn'])
-'''
-
 #calling functions
 def roll(dNum,dSid,di,rolDB): 
     di['nmbr'] = dNum
@@ -52,8 +32,6 @@ def roll(dNum,dSid,di,rolDB):
 
     physics(di)
     rolDBize(di, rolDB)
-    #whtnize(di)
-    #return rollOut(di) #For CLI
     return di['totl']
 
 #def rollMix():
@@ -68,12 +46,10 @@ def rollHigh(dNum,dSid,take,di,rolDB):
     sort = sorted(di['rols'], key=None, reverse=True)
     for i in range(0,take):
 	di['totl'] += sort[i]
-    #whtnize(di)
 
     di['nmbr'] = 'H'
     rolDBize(di, rolDB)
 
-    #return rollOut(di) #For CLI
     return di['totl']
 
 def rollLow(dNum,dSid,take,di,rolDB):
@@ -86,12 +62,10 @@ def rollLow(dNum,dSid,take,di,rolDB):
     sort = sorted(di['rols'])
     for i in range(0,take):
 	di['totl'] += sort[i]
-    #whtnize(di)
 
     di['nmbr'] = 'L'
     rolDBize(di, rolDB)
 
-    #return rollOut(di) #for CLI
     return di['totl']
 
 def rollDigit(dNum,dSid,di,rolDB):
@@ -112,12 +86,9 @@ def rollDigit(dNum,dSid,di,rolDB):
     di['sids'] = di['sids'] ** di['nmbr']
     if di['totl'] == 0: di['totl'] = di['sids']
 
-    di['nmbr'] = 1
     di['rols'].reverse()
-    #whtnize(di)
     di['nmbr'] = 'D'
 
-    #return rollOut(di) #For CLI
     return di['totl']
 
 def rollExtra(dNum,dSid,di,rolDB):
@@ -125,22 +96,17 @@ def rollExtra(dNum,dSid,di,rolDB):
     di['nmbr'] = dNum
     di['sids'] = dSid
     physics(di)
-    #whtnize(di)
     di['totl'] += lastRoll
     di['nmbr'] = 'X'
     rolDBize(di,rolDB)
-    #return rollOut(di) #For CLI
     return di['totl']    
 
-#Do I need dNum arg if i'm just going to change it to 'M'?
-def rollManual(dNum,dSid,rolList,di,rolDB):
-    di['nmbr'] = dNum
+def rollManual(dSid,rolList,di,rolDB):
+    di['nmbr'] = 'M'
     di['sids'] = dSid
     di['rols'] = rolList
     di['totl'] = sum(rolList)
     rolDBize(di,rolDB)
-    #whtnize(di)
-    #return rollOut(di) #For CLI
     return di['totl']
 
 
@@ -162,8 +128,8 @@ def main():
     #print rollDigit(2,8,di,rolDB)
     #print rollDigit(2,12,di,rolDB)
     #print rollDigit(2,20,di,rolDB)
-    print rollManual(1,20,[20],di,rolDB)
-    #print rollManual(3,12,[12,12,12],di,rolDB)
+    print rollManual(20,[20],di,rolDB)
+    #print rollManual(12,[12,12,12],di,rolDB)
     print rolDB
 
 if __name__ == '__main__':
