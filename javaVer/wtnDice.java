@@ -1,6 +1,8 @@
 public class wtnDice {
+
     public static void main(String [] args) {
-	double roll = Math.random();
+	int sides = 20;
+	int roll = (int)Math.ceil(Math.random() * sides);
 	System.out.println(roll);
     }
 }
